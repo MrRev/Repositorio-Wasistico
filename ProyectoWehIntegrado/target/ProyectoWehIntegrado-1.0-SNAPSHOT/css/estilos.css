@@ -1,0 +1,44 @@
+/* Custom styles for Bodega Don Pablo */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #FFF8E1;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-link {
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: #FFD700 !important;
+    color: #8B0000 !important;
+}
+
+.form-control {
+    border-radius: 20px;
+}
+
+.btn-primary {
+    background-color: #FFD700;
+    border-color: #FFD700;
+    color: #8B0000;
+}
+
+.btn-primary:hover {
+    background-color: #DAA520;
+    border-color: #DAA520;
+}
+
+@media (max-width: 767px) {
+    .navbar-form {
+        width: 100%;
+        margin: 10px 0;
+    }
+    .navbar-form .form-control {
+        width: 100% !important;
+    }
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <h:head>
+        <title>Login - Bodega Don Pablo</title>
+        <h:outputStylesheet library="css" name="estilos.css" />
+    </h:head>
+    <h:body>
+        <b:container>
+            <div class="login-container bg-blue">
+                <b:jumbotron style="background-color: #007bff; color: white;">
+                    <h1 class="text-center">Iniciar Sesión</h1>
+                    <p class="text-center">Bienvenido a Bodega Don Pablo</p>
+                </b:jumbotron>
+                <b:form>
+                    <b:panel>
+                        <h:panelGrid columns="2" styleClass="form-group">
+                            <h:outputLabel for="dni" value="DNI: " style="color: white;" />
+                            <b:inputText id="dni" value="#{loginBean.usuario.dni}" required="true" styleClass="form-control" />
+                            <h:outputLabel for="contraseña" value="Contraseña: " style="color: white;" />
+                            <b:inputSecret id="contraseña" value="#{loginBean.usuario.contraseña}" required="true" styleClass="form-control" />
+                            <h:outputText /> <!-- Espaciador -->
+                            <b:commandButton value="Iniciar Sesión" action="#{loginBean.validarLogin}" styleClass="btn btn-primary btn-block" />
+                        </h:panelGrid>
+                        <h:messages globalOnly="true" style="color: yellow;" />
+                    </b:panel>
+                </b:form>
+            </div>
+        </b:container>
+    </h:body>
+</html>
