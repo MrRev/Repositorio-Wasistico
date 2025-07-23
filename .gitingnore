@@ -1,0 +1,11 @@
+# NetBeans
+nbproject/private/
+build/
+dist/
+# Maven
+target/
+*.log
+# Otros
+.DS_Store
+.idea/
+*.iml
