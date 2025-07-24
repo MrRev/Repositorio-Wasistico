@@ -14,6 +14,7 @@ public class DashboardBean {
     private int totalCategorias;
     private int totalVentas;
     private double totalIngresos;
+    private int totalUsuarios;
 
     private DashboardDAO dao = new DashboardDAO();
 
@@ -24,6 +25,7 @@ public class DashboardBean {
         totalCategorias = dao.contarCategorias();
         totalVentas = dao.contarVentas();
         totalIngresos = dao.obtenerTotalIngresos();
+        totalUsuarios = dao.contarUsuarios();
     }
 
     public int getTotalProductos() { return totalProductos; }
@@ -31,5 +33,6 @@ public class DashboardBean {
     public int getTotalCategorias() { return totalCategorias; }
     public int getTotalVentas() { return totalVentas; }
     public double getTotalIngresos() { return totalIngresos; }
+    public int getTotalUsuarios() { return totalUsuarios; }
 
 }

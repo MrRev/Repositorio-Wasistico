@@ -10,33 +10,43 @@
             <f:metadata>
                 <f:event type="preRenderView" listener="#{loginBean.verificarSesion}"/>
             </f:metadata>
-            <h1>Dashboard Principal</h1>
-            <b:panel title="Resumen">
-                <b:row>
-                    <b:column col-md="4" style="text-align:center;">
-                        <b:badge value="#{dashboardBean.totalClientes}" style="font-size: 2rem; padding: 1rem;"/>
-                        <h4>Clientes</h4>
-                    </b:column>
-                    <b:column col-md="4" style="text-align:center;">
-                        <b:badge value="#{dashboardBean.totalProductos}" style="font-size: 2rem; padding: 1rem;"/>
-                        <h4>Productos</h4>
-                    </b:column>
-                    <b:column col-md="4" style="text-align:center;">
-                        <b:badge value="#{dashboardBean.totalCategorias}" style="font-size: 2rem; padding: 1rem;"/>
-                        <h4>Categorías</h4>
-                    </b:column>
-                </b:row>
-                <b:row style="margin-top: 2rem;">
-                    <b:column col-md="6" style="text-align:center;">
-                        <b:badge value="#{dashboardBean.totalVentas}" style="font-size: 2rem; padding: 1rem;"/>
-                        <h4>Ventas</h4>
-                    </b:column>
-                    <b:column col-md="6" style="text-align:center;">
-                        <b:badge value="#{dashboardBean.totalIngresos}" style="font-size: 2rem; padding: 1rem;"/>
-                        <h4>Ingresos Totales</h4>
-                    </b:column>
-                </b:row>
-            </b:panel>
+            <h2>Dashboard Principal</h2>
+            <b:row>
+                <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
+                    <b:panel title="Total de Clientes" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalClientes}" style="font-size: 2.5rem; padding: 1rem; background-color: #3498db; color: white;"/>
+                    </b:panel>
+                </b:column>
+                <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
+                    <b:panel title="Total de Productos" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalProductos}" style="font-size: 2.5rem; padding: 1rem; background-color: #27ae60; color: white;"/>
+                    </b:panel>
+                </b:column>
+            </b:row>
+            <b:row>
+                <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
+                    <b:panel title="Total de Categorías" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalCategorias}" style="font-size: 2.5rem; padding: 1rem; background-color: #f39c12; color: white;"/>
+                    </b:panel>
+                </b:column>
+                <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
+                    <b:panel title="Total de Ventas" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalVentas}" style="font-size: 2.5rem; padding: 1rem; background-color: #8e44ad; color: white;"/>
+                    </b:panel>
+                </b:column>
+            </b:row>
+            <b:row>
+                <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
+                    <b:panel title="Ingresos Totales" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalIngresos}" style="font-size: 2.5rem; padding: 1rem; background-color: #c0392b; color: white;"/>
+                    </b:panel>
+                </b:column>
+                <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
+                    <b:panel title="Total de Empleados" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalUsuarios}" style="font-size: 2.5rem; padding: 1rem; background-color: #d35400; color: white;"/>
+                    </b:panel>
+                </b:column>
+            </b:row>
         </b:container>
     </ui:define>
 </ui:composition>

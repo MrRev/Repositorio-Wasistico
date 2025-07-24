@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:b="http://bootsfaces.net/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
+        <ui:define name="titulo">Bodega Don Pablo</ui:define>
         <title>Dashboard Template con BootsFaces</title>
         <meta name="author" content="Generado con BootsFaces" />
         <style>
@@ -18,12 +19,16 @@
                 overflow: hidden;
             }
             .header {
+                display: flex; /* Cambiado para hacer el header responsivo */
                 align-items: center;
                 justify-content: center;
-                height: 10%;
+                height: auto; /* Cambiado para que el header se adapte */
                 background-color: #222;
                 padding: 10px;
                 flex-shrink: 0;
+                text-align: center; /* Asegura que el texto esté centrado */
+                color: white; /* Asegura que el texto sea legible */
+                font-size: 1.5em; /* Tamaño de fuente adaptable */
             }
             .navbar-top {
                 font-size: 18px !important;
@@ -44,7 +49,7 @@
                 min-height: 0; /* Evita colapso */
             }
             .content::-webkit-scrollbar {
-                width: 8px; /* Ancho de la barra en Chrome/Safari */
+                width: 8px; /* Ancho de la barra */
             }
             .content::-webkit-scrollbar-track {
                 background: #f1f1f1; /* Color del fondo de la barra */
@@ -61,13 +66,20 @@
                 background-color: #444;
                 color: white;
                 padding: 10px;
-                text-align: center;
+                text-align: center; /* Asegura que el texto esté centrado */
+                align-items: center;
                 flex-shrink: 0;
+                display: flex; /* Cambiado para centrar el contenido */
+                justify-content: center; /* Centra el contenido horizontalmente */
             }
             .btn-space {
                 margin-right: 10px;
             }
             @media (max-width: 767px) {
+                .header {
+                    font-size: 1.2em; /* Tamaño de fuente más pequeño en móviles */
+                    padding: 5px; /* Menos padding en móviles */
+                }
                 .navbar-top {
                     flex-direction: column;
                     height: auto;
@@ -92,9 +104,9 @@
     <h:body>
         <div class="container-full">
             <!-- Header -->
-            <ui:insert name="header">
-                <ui:include src="/plantilla/header.xhtml"/>
-            </ui:insert>
+            <div class="header">
+                <h2>Bodega Don Pablo</h2> <!-- Header responsivo -->
+            </div>
 
             <!-- Navbar Superior -->
             <ui:insert name="navbar-top">
@@ -103,7 +115,6 @@
 
             <!-- Contenido dinámico -->
             <div class="content">
-                <ui:insert name="contenido"/>
                 <ui:insert name="contenido"/>
                 <ui:insert name="contenido"/>
                 <ui:insert name="contenido"/>
