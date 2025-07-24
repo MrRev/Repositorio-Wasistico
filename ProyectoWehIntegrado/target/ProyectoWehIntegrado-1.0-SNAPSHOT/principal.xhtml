@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit this template
--->
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>TODO supply a title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:b="http://bootsfaces.net/ui" 
+                xmlns:f="jakarta.faces.core" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                template="/plantilla/template.xhtml">
+    <ui:define name="contenido">
+        <b:container>
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{loginBean.verificarSesion}"/>
+            </f:metadata>
+            <h1>Dashboard Principal</h1>
+            <b:panel title="Resumen">
+                <b:row>
+                    <b:column col-md="4" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalClientes}" style="font-size: 2rem; padding: 1rem;"/>
+                        <h4>Clientes</h4>
+                    </b:column>
+                    <b:column col-md="4" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalProductos}" style="font-size: 2rem; padding: 1rem;"/>
+                        <h4>Productos</h4>
+                    </b:column>
+                    <b:column col-md="4" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalCategorias}" style="font-size: 2rem; padding: 1rem;"/>
+                        <h4>Categorías</h4>
+                    </b:column>
+                </b:row>
+                <b:row style="margin-top: 2rem;">
+                    <b:column col-md="6" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalVentas}" style="font-size: 2rem; padding: 1rem;"/>
+                        <h4>Ventas</h4>
+                    </b:column>
+                    <b:column col-md="6" style="text-align:center;">
+                        <b:badge value="#{dashboardBean.totalIngresos}" style="font-size: 2rem; padding: 1rem;"/>
+                        <h4>Ingresos Totales</h4>
+                    </b:column>
+                </b:row>
+            </b:panel>
+        </b:container>
+    </ui:define>
+</ui:composition>

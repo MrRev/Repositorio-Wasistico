@@ -1,36 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:ui="jakarta.faces.facelets"
-      xmlns:b="http://bootsfaces.net/ui">
-    
-    <h:head>
-        <title>Login - Bodega Don Pablo</title>
-        <h:outputStylesheet library="css" name="estilos.css" />
-    </h:head>
-    <h:body>
-        <b:container>
-            <div class="login-container bg-blue">
-                <b:jumbotron style="background-color: #007bff; color: white;">
-                    <h1 class="text-center">Iniciar Sesión</h1>
-                    <p class="text-center">Bienvenido a Bodega Don Pablo</p>
-                </b:jumbotron>
-                <b:form>
-                    <b:panel>
-                        <h:panelGrid columns="2" styleClass="form-group">
-                            <h:outputLabel for="dni" value="DNI: " style="color: white;" />
-                            <b:inputText id="dni" value="#{loginBean.usuario.dni}" required="true" styleClass="form-control" />
-                            <h:outputLabel for="contraseña" value="Contraseña: " style="color: white;" />
-                            <b:inputSecret id="contraseña" value="#{loginBean.usuario.contraseña}" required="true" styleClass="form-control" />
-                            <h:outputText /> <!-- Espaciador -->
-                            <b:commandButton value="Iniciar Sesión" action="#{loginBean.validarLogin}" styleClass="btn btn-primary btn-block" />
-                        </h:panelGrid>
-                        <h:messages globalOnly="true" style="color: yellow;" />
-                    </b:panel>
-                </b:form>
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Iniciar Sesión</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-image: url('img/foto.jpg');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                font-family: Arial, sans-serif;
+            }
+            .login-container {
+                background: rgba(255, 255, 255, 0.1); /* Contenedor transparente */
+                backdrop-filter: blur(10px); /* Efecto de desenfoque */
+                padding: 40px;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                width: 300px;
+                max-width: 90%; /* Responsivo para pantallas pequeñas */
+                text-align: center;
+                box-sizing: border-box;
+            }
+            .login-container h2 {
+                color: white;
+                margin-bottom: 20px;
+                font-size: 1.8rem;
+            }
+            .login-container label {
+                color: white;
+                display: block;
+                text-align: left;
+                margin-bottom: 5px;
+                font-size: 1rem;
+            }
+            .login-container input[type="text"],
+            .login-container input[type="password"] {
+                width: 100%;
+                padding: 10px;
+                margin: 10px 0;
+                border: none;
+                border-radius: 5px;
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                font-size: 1rem;
+                box-sizing: border-box; /* Asegura tamaño consistente */
+            }
+            .login-container input[type="text"]::placeholder,
+            .login-container input[type="password"]::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+            .login-container input[type="submit"] {
+                width: 200px; /* Tamaño fijo para el botón */
+                max-width: 100%;
+                padding: 10px;
+                background-color: #3b82f6;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                display: block;
+                margin: 20px auto; /* Centrar el botón */
+            }
+            .login-container input[type="submit"]:hover {
+                background-color: #2563eb;
+            }
+            .error-message {
+                color: #ff4444;
+                font-size: 0.9rem;
+                margin-top: 10px;
+            }
+            /* Media Queries para responsividad */
+            @media (max-width: 600px) {
+                .login-container {
+                    padding: 20px;
+                    width: 80%;
+                }
+                .login-container h2 {
+                    font-size: 1.5rem;
+                }
+                .login-container input[type="text"],
+                .login-container input[type="password"],
+                .login-container input[type="submit"] {
+                    font-size: 0.9rem;
+                    padding: 8px;
+                }
+            }
+            @media (max-width: 400px) {
+                .login-container {
+                    width: 85%;
+                    padding: 15px;
+                }
+                .login-container h2 {
+                    font-size: 1.2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h:form id="loginForm">
+            <div class="login-container">
+                <h2>Iniciar Sesión</h2>
+                <h:outputLabel for="dni" value="DNI:" style="color: white;"/>
+                <h:inputText id="dni" value="#{loginBean.usuario.dni}" required="true" requiredMessage="El DNI es obligatorio"/>
+                <h:outputLabel for="password" value="Contraseña:" style="color: white;"/>
+                <h:inputSecret id="password" value="#{loginBean.usuario.contraseña}" required="true" requiredMessage="La contraseña es obligatoria"/>
+                <h:commandButton value="Iniciar Sesión" action="#{loginBean.validarLogin}"/>
+                <h:messages styleClass="error-message" globalOnly="true"/>
             </div>
-        </b:container>
-    </h:body>
+        </h:form>
+    </body>
 </html>

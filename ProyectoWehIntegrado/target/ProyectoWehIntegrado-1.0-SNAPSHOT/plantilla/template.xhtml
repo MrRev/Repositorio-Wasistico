@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:b="http://bootsfaces.net/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Dashboard Template con BootsFaces</title>
+        <meta name="author" content="Generado con BootsFaces" />
+        <style>
+            html, body {
+                height: 100vh;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            .container-full {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                overflow: hidden;
+            }
+            .header {
+                align-items: center;
+                justify-content: center;
+                height: 10%;
+                background-color: #222;
+                padding: 10px;
+                flex-shrink: 0;
+            }
+            .navbar-top {
+                font-size: 18px !important;
+                height: 20%;
+                background-color: #333;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+            .content {
+                height: 65%;
+                background-color: #f8f8f8;
+                padding: 10px;
+                overflow-y: auto; /* Scroll vertical cuando el contenido excede el 65% */
+                flex: 1 0 auto; /* Permite crecimiento pero respeta el 65% como base */
+                min-height: 0; /* Evita colapso */
+            }
+            .content::-webkit-scrollbar {
+                width: 8px; /* Ancho de la barra en Chrome/Safari */
+            }
+            .content::-webkit-scrollbar-track {
+                background: #f1f1f1; /* Color del fondo de la barra */
+            }
+            .content::-webkit-scrollbar-thumb {
+                background-color: #888; /* Color de la barra de scroll */
+                border-radius: 4px; /* Bordes redondeados */
+            }
+            .content::-webkit-scrollbar-thumb:hover {
+                background-color: #555; /* Cambio de color al pasar el ratón */
+            }
+            .footer {
+                height: 5%;
+                background-color: #444;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+            .btn-space {
+                margin-right: 10px;
+            }
+            @media (max-width: 767px) {
+                .navbar-top {
+                    flex-direction: column;
+                    height: auto;
+                    min-height: 20%;
+                    padding: 10px;
+                }
+                .btn-space {
+                    margin-bottom: 10px;
+                    margin-right: 0;
+                }
+                .content {
+                    height: auto; /* Ajuste automático en móvil */
+                    flex: 1;
+                }
+                .footer {
+                    height: auto;
+                    min-height: 5%;
+                }
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="container-full">
+            <!-- Header -->
+            <ui:insert name="header">
+                <ui:include src="/plantilla/header.xhtml"/>
+            </ui:insert>
+
+            <!-- Navbar Superior -->
+            <ui:insert name="navbar-top">
+                <ui:include src="/plantilla/sidebar.xhtml"/>
+            </ui:insert>
+
+            <!-- Contenido dinámico -->
+            <div class="content">
+                <ui:insert name="contenido"/>
+                <ui:insert name="contenido"/>
+                <ui:insert name="contenido"/>
+                <ui:insert name="contenido"/>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <ui:insert name="footer">
+                    2025 - Bodega Don Pablo. Todos los derechos reservados.
+                </ui:insert>
+            </div>
+        </div>
+    </h:body>
+</html>

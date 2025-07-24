@@ -25,6 +25,16 @@ public class DashboardDAO {
         return 0;
     }
 
+    public int contarCategorias() {
+        String sql = "SELECT COUNT(*) FROM Categorias";
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) { e.printStackTrace(); }
+        return 0;
+    }
+
     public int contarVentas() {
         String sql = "SELECT COUNT(*) FROM Ventas";
         try (Connection con = Conexion.getConexion();
