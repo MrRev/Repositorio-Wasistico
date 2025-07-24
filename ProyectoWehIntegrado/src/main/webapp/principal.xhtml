@@ -4,7 +4,8 @@
                 xmlns:b="http://bootsfaces.net/ui" 
                 xmlns:f="jakarta.faces.core" 
                 xmlns:ui="http://java.sun.com/jsf/facelets" 
-                template="/plantilla/template.xhtml">
+                template="/plantilla/template.xhtml"
+                xmlns:p="http://primefaces.org/ui">
     <ui:define name="contenido">
         <b:container>
             <f:metadata>
@@ -47,6 +48,21 @@
                     </b:panel>
                 </b:column>
             </b:row>
+            <!-- Gráficos de PrimeFaces -->
+            <h2>Graficos</h2>
+            <b:row>
+                <b:column col-xs="12" col-lg="6" style="margin-bottom: 2rem;">
+                    <p:panel header="Ventas por Categoría" styleClass="grafico-panel">
+                        <p:barChart id="barChart" model="#{dashboardBean.barModelVentasCategoria}" style="width:100%; height:300px;"/>
+                    </p:panel>
+                </b:column>
+
+                <b:column col-xs="12" col-lg="6" style="margin-bottom: 2rem;">
+                    <p:panel header="Top 5 Productos Más Vendidos" styleClass="grafico-panel">
+                        <p:barChart id="barChartProductos" model="#{dashboardBean.barModelProductosMasVendidos}" style="width:100%; height:300px;"/>
+                    </p:panel>
+                </b:column>
+            </b:row>
         </b:container>
     </ui:define>
 </ui:composition>

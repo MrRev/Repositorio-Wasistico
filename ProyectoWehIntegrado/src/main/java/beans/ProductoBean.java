@@ -30,10 +30,14 @@ public class ProductoBean implements Serializable {
     }
 
     @PostConstruct
-    public void init() throws SQLException {
-        listarProductos();
-        listaCategorias = categoriaDAO.listarCategorias();
-        productoSeleccionado = new Producto();
+    public void init() {
+        try {
+            listarProductos();
+            listaCategorias = categoriaDAO.listarCategorias();
+            productoSeleccionado = new Producto();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void listarProductos() {

@@ -1,11 +1,3 @@
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/SQLTemplate.sql to edit this template
- */
-/**
- * Author:  Muaro
- * Created: 23 jul. 2025
- */
 -- Eliminar la base de datos si existe (para entornos de desarrollo/pruebas)
 -- DROP DATABASE IF EXISTS BodegaDonPablo;
 
