@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/plantilla/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{loginBean.verificarSesion}"/>
+    </f:metadata>
+
+    <ui:define name="titulo">Gestión de Productos</ui:define>
+
+    <ui:define name="contenido">
+        <h:head>
+            <!-- Estilos responsivos integrados -->
+            <style type="text/css">
+                body, html {
+                    font-family: 'Inter', sans-serif;
+                    background-color: #f3f4f6;
+                    font-size: 16px;
+                    min-width: 320px;
+                }
+
+                .main-container {
+                    padding-top: 10px !important;
+                    padding-bottom: 10px !important;
+                    max-width: 1200px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    padding: 1rem;
+                }
+
+                .card {
+                    background-color: white;
+                    border-radius: 0.75rem;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                    padding: 1.5rem;
+                    margin-bottom: 1.5rem;
+                }
+
+                .ui-datatable, .ui-datatable * {
+                    font-size: 1rem !important;
+                    line-height: 1.5;
+                }
+                .ui-button, .ui-outputlabel, .ui-inputtext, .ui-inputtextarea, .ui-selectonemenu {
+                    font-size: 1rem !important;
+                }
+
+                .ui-datatable .ui-datatable-header {
+                    background-color: #1a73e8;
+                    color: white;
+                    padding: 1rem;
+                    font-size: 1.25rem;
+                    border-top-left-radius: 0.5rem;
+                    border-top-right-radius: 0.5rem;
+                }
+                .ui-datatable .ui-datatable-data > tr > td {
+                    padding: 0.75rem;
+                    border-bottom: 1px solid #e5e7eb;
+                }
+                .ui-datatable .ui-datatable-data > tr:nth-child(even) {
+                    background-color: #f9fafb;
+                }
+                .ui-datatable .ui-datatable-data > tr:hover {
+                    background-color: #e0f2fe;
+                }
+
+                .ui-button {
+                    border-radius: 0.5rem;
+                    padding: 0.75rem 1.5rem;
+                    font-weight: 600;
+                    transition: background-color 0.3s ease;
+                }
+                .ui-button.ui-button-success {
+                    background-color: #10b981;
+                    color: white;
+                }
+                .ui-button.ui-button-success:hover {
+                    background-color: #059669;
+                }
+                .ui-button.ui-button-info {
+                    background-color: #3b82f6;
+                    color: white;
+                }
+                .ui-button.ui-button-info:hover {
+                    background-color: #2563eb;
+                }
+                .ui-button.ui-button-warning {
+                    background-color: #f59e0b;
+                    color: white;
+                }
+                .ui-button.ui-button-warning:hover {
+                    background-color: #d97706;
+                }
+                .ui-button.ui-button-danger {
+                    background-color: #ef4444;
+                    color: white;
+                }
+                .ui-button.ui-button-danger:hover {
+                    background-color: #dc2626;
+                }
+                .ui-button.ui-button-secondary {
+                    background-color: #6b7280;
+                    color: white;
+                }
+                .ui-button.ui-button-secondary:hover {
+                    background-color: #4b5563;
+                }
+
+                /* Estilos para diálogos de PrimeFaces */
+                .ui-dialog.rounded-lg .ui-dialog-titlebar {
+                    background-color: #1a73e8;
+                    color: white;
+                    padding: 1rem;
+                    font-size: 1.125rem;
+                    border-top-left-radius: 0.5rem;
+                    border-top-right-radius: 0.5rem;
+                }
+                .ui-dialog .ui-dialog-content {
+                    padding: 1.5rem !important; /* Ajustado para consistencia */
+                }
+                .ui-dialog .ui-dialog-buttonpane { /* Clase por defecto de PrimeFaces para el pie de página de los diálogos */
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    padding: 15px;
+                    background-color: #f8f9fa;
+                    border-top: 1px solid #e9ecef;
+                    min-height: 60px;
+                    box-sizing: border-box;
+                }
+                .ui-dialog .ui-dialog-buttonpane .ui-button {
+                    margin-left: 10px; /* Espacio entre botones */
+                }
+
+                .ui-messages-info, .ui-messages-error, .ui-messages-warn, .ui-messages-success {
+                    border-radius: 0.5rem;
+                    padding: 1rem;
+                    margin-bottom: 1rem;
+                }
+                .ui-messages-info {
+                    background-color: #dbeafe;
+                    color: #1e40af;
+                    border: 1px solid #93c5fd;
+                }
+                .ui-messages-error {
+                    background-color: #fee2e2;
+                    color: #991b1b;
+                    border: 1px solid #fca5a5;
+                }
+                .ui-messages-warn {
+                    background-color: #fffbe6;
+                    color: #92400e;
+                    border: 1px solid #fcd34d;
+                }
+                .ui-messages-success {
+                    background-color: #d1fae5;
+                    color: #065f46;
+                    border: 1px solid #6ee7b7;
+                }
+
+                .ui-paginator {
+                    margin-top: 10px;
+                    text-align: center;
+                }
+                .ui-datatable-striped .ui-datatable-odd {
+                    background-color: #f2f2f2 !important;
+                }
+                .action-buttons-group {
+                    display: flex;
+                    gap: 5px;
+                    flex-wrap: nowrap;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .action-buttons-group .ui-button {
+                    min-width: 65px;
+                    padding: 3px 8px;
+                    font-size: 0.9rem;
+                    white-space: nowrap;
+                    box-sizing: border-box;
+                }
+
+                .global-filter-container {
+                    margin-bottom: 15px;
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    border-radius: 5px;
+                }
+                .global-filter-container .ui-inputtext {
+                    width: 100%;
+                }
+                .ui-column-filter {
+                    width: 100% !important;
+                    box-sizing: border-box;
+                    margin-top: 5px;
+                }
+
+                /* --- NUEVOS ESTILOS PARA MEJORAR LA APARIENCIA DEL FORMULARIO --- */
+                .field {
+                    margin-bottom: 1rem; /* Espacio entre campos */
+                }
+
+                .field .ui-outputlabel {
+                    display: block; /* Hace que la etiqueta ocupe todo el ancho y se apile encima del input */
+                    margin-bottom: 0.5rem; /* Espacio entre la etiqueta y el input */
+                    font-weight: 600; /* Hace las etiquetas ligeramente más negritas para mejor legibilidad */
+                    color: #374151; /* Color de texto más oscuro para las etiquetas */
+                }
+
+                /* Asegurar que los inputs de PrimeFaces llenen su contenedor y tengan un estilo consistente */
+                .ui-inputtext,
+                .ui-inputtextarea,
+                .ui-selectonemenu .ui-selectonemenu-trigger, /* Para el botón desplegable del selectOneMenu */
+                .ui-selectonemenu .ui-selectonemenu-label { /* Para el texto del selectOneMenu */
+                    width: 100%; /* Asegura que ocupen todo el ancho de su columna padre */
+                    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total del elemento */
+                    padding: 0.75rem 1rem; /* Padding consistente */
+                    border: 1px solid #d1d5db; /* Color de borde consistente */
+                    border-radius: 0.5rem; /* Bordes redondeados consistentes */
+                    background-color: #ffffff; /* Fondo blanco */
+                    color: #1f2937; /* Color de texto oscuro */
+                    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Transiciones suaves para el enfoque */
+                }
+
+                .ui-inputtext:focus,
+                .ui-inputtextarea:focus,
+                .ui-selectonemenu:focus {
+                    outline: none;
+                    border-color: #3b82f6; /* Borde azul al enfocar */
+                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* Sombra azul al enfocar */
+                }
+
+                /* Ajustar los mensajes de PrimeFaces para una mejor integración */
+                .ui-message {
+                    margin-top: 0.25rem;
+                    font-size: 0.875rem;
+                    color: #ef4444; /* Rojo para mensajes de error */
+                }
+                .ui-message.ui-message-error {
+                    color: #ef4444;
+                }
+                /* --- FIN DE NUEVOS ESTILOS --- */
+
+
+                @media (max-width: 768px) {
+                    .ui-datatable.ui-datatable-reflow .ui-datatable-data td .ui-column-title {
+                        font-weight: bold;
+                        margin-right: 0.5rem;
+                    }
+                    .ui-datatable.ui-datatable-reflow .ui-column-filter {
+                        display: none !important;
+                    }
+                    .action-buttons-group {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+                    .action-buttons-group .ui-button {
+                        width: 100%;
+                        margin-bottom: 5px;
+                    }
+                    .ui-dialog {
+                        width: 95% !important;
+                        min-width: unset !important;
+                        left: 2.5% !important;
+                        top: 20px !important;
+                    }
+                    .ui-dialog .ui-dialog-content {
+                        padding: 15px !important;
+                    }
+                    .ui-dialog-footer {
+                        flex-direction: column;
+                        gap: 10px;
+                    }
+                    .ui-dialog-footer .ui-button {
+                        margin-left: 0 !important;
+                        width: 100%;
+                    }
+                    .grid.grid-cols-1.md\:grid-cols-2 {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            </style>
+        </h:head>
+
+        <!-- Remote Commands para inicialización y carga de datos -->
+        <p:remoteCommand name="initPageProducto" action="#{productoBean.cargarCategorias}"
+                         update=":productoForm:addProductoForm:categoriaAdd :productoForm:messages"
+                         process="@this"
+                         oncomplete="cargarProductos()" />
+        <p:remoteCommand name="cargarProductos" action="#{productoBean.buscarProductos()}"
+                         update=":productoForm:productosTable :productoForm:messages"
+                         process="@this" />
+        <p:remoteCommand name="actualizarDialogoEditarProducto" action="#{productoBean.cargarCategorias}"
+                         update=":productoForm:editProductDialog :productoForm:messages"
+                         process="@this" />
+
+        <h:outputScript>
+            document.addEventListener('DOMContentLoaded', function() {
+            initPageProducto();
+            });
+        </h:outputScript>
+
+        <div class="main-container">
+            <h:form id="productoForm">
+                <p:growl id="messages" showDetail="true" />
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Gestión de Productos</h2>
+
+                <!-- Sección para Agregar Nuevo Producto -->
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Agregar Nuevo Producto</h3>
+                    <!-- Cambio: h:panelGroup reemplazado por h:form para que addProductoForm sea un naming container -->
+                    <h:form id="addProductoForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="field">
+                                <p:outputLabel for="nombreAdd">Nombre:</p:outputLabel>
+                                <p:inputText id="nombreAdd" value="#{productoBean.producto.nombre}" required="true"
+                                             requiredMessage="El nombre es obligatorio." styleClass="w-full p-2 border border-gray-300 rounded-md"/>
+                                <p:message for="nombreAdd" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="descripcionAdd">Descripción:</p:outputLabel>
+                                <p:inputTextarea id="descripcionAdd" value="#{productoBean.producto.descripcion}" rows="3"
+                                                 styleClass="w-full p-2 border border-gray-300 rounded-md"/>
+                                <p:message for="descripcionAdd" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="precioUnitarioAdd">Precio Unitario:</p:outputLabel>
+                                <p:inputText id="precioUnitarioAdd" value="#{productoBean.producto.precioUnitario}" required="true"
+                                             requiredMessage="El precio es obligatorio." converterMessage="El precio debe ser un número válido."
+                                             styleClass="w-full p-2 border border-gray-300 rounded-md">
+                                    <f:convertNumber type="number" minFractionDigits="2" maxFractionDigits="2"/>
+                                </p:inputText>
+                                <p:message for="precioUnitarioAdd" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="stockAdd">Stock:</p:outputLabel>
+                                <p:inputText id="stockAdd" value="#{productoBean.producto.stock}" required="true"
+                                             requiredMessage="El stock es obligatorio." converterMessage="El stock debe ser un número entero."
+                                             styleClass="w-full p-2 border border-gray-300 rounded-md">
+                                    <f:convertNumber integerOnly="true"/>
+                                </p:inputText>
+                                <p:message for="stockAdd" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="categoriaAdd">Categoría:</p:outputLabel>
+                                <p:selectOneMenu id="categoriaAdd" value="#{productoBean.producto.idCategoria}" required="true"
+                                                 requiredMessage="La categoría es obligatoria." styleClass="w-full">
+                                    <f:selectItem itemLabel="Seleccione una Categoría" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{productoBean.listaCategorias}" var="cat" itemLabel="#{cat.descripcion}" itemValue="#{cat.idCategoria}"/>
+                                </p:selectOneMenu>
+                                <p:message for="categoriaAdd" />
+                            </div>
+                        </div>
+                        <div class="flex justify-end mt-4">
+                            <p:commandButton value="Guardar Producto"
+                                             action="#{productoBean.agregarProducto()}"
+                                             update=":productoForm:productosTable :productoForm:messages :productoForm:addProductoForm"
+                                             process="@this :productoForm:addProductoForm"
+                                             styleClass="ui-button ui-button-success"/>
+                            <p:commandButton value="Limpiar Campos"
+                                             action="#{productoBean.limpiarFormulario()}"
+                                             update=":productoForm:addProductoForm"
+                                             process="@this"
+                                             immediate="true"
+                                             styleClass="ui-button ui-button-secondary ml-2"/>
+                        </div>
+                    </h:form>
+                </div>
+
+                <!-- Sección de Búsqueda y Limpieza -->
+                <div class="card mb-8">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Buscar Productos</h3>
+                    <div class="global-filter-container flex items-center space-x-4">
+                        <p:inputText id="filtro" value="#{productoBean.filtro}" placeholder="Buscar por nombre o descripción" styleClass="p-2 border border-gray-300 rounded-md flex-grow"/>
+                        <p:commandButton value="Buscar" action="#{productoBean.buscarProductos()}"
+                                         update=":productoForm:productosTable :productoForm:messages"
+                                         process="@this :productoForm:filtro"
+                                         styleClass="ui-button ui-button-info"/>
+                        <p:commandButton value="Limpiar Filtro" action="#{productoBean.limpiarFiltro()}" update=":productoForm:filtro :productoForm:productosTable :productoForm:messages" styleClass="ui-button ui-button-warning"/>
+                    </div>
+
+                    <!-- Tabla de Productos -->
+                    <p:dataTable id="productosTable" var="producto" value="#{productoBean.listaProductos}" rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" emptyMessage="No se encontraron productos."
+                                 class="rounded-lg overflow-hidden shadow-lg" reflow="true">
+
+                        <f:facet name="header">
+                            Lista de Productos
+                        </f:facet>
+
+                        <p:column headerText="ID" class="text-center">
+                            <h:outputText value="#{producto.idProducto}" />
+                        </p:column>
+
+                        <p:column headerText="Categoría" class="text-center">
+                            <h:outputText value="#{producto.categoriaNombre}" />
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{producto.nombre}" />
+                        </p:column>
+
+                        <p:column headerText="Descripción">
+                            <h:outputText value="#{producto.descripcion}" />
+                        </p:column>
+
+                        <p:column headerText="Precio Unitario" class="text-right">
+                            <h:outputText value="#{producto.precioUnitario}">
+                                <f:convertNumber type="currency" currencySymbol="S/." locale="es_PE"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Stock" class="text-center">
+                            <h:outputText value="#{producto.stock}" />
+                        </p:column>
+
+                        <p:column headerText="Acciones" class="text-center">
+                            <div class="action-buttons-group">
+                                <p:commandButton icon="pi pi-pencil"
+                                                 process="@this"
+                                                 action="#{productoBean.prepararEditar(producto)}"
+                                                 oncomplete="PF('editProductDialog').show(); setTimeout(function() { actualizarDialogoEditarProducto(); }, 50);"
+                                                 styleClass="rounded-md p-2 ui-button ui-button-info"
+                                                 title="Editar">
+                                    <f:setPropertyActionListener value="#{producto}" target="#{productoBean.productoSeleccionado}" />
+                                </p:commandButton>
+                                <p:commandButton icon="pi pi-trash"
+                                                 process="@this"
+                                                 update=":productoForm:deleteProductDialog"
+                                                 action="#{productoBean.prepararEliminar(producto)}"
+                                                 oncomplete="PF('deleteProductDialog').show()"
+                                                 styleClass="rounded-md p-2 ui-button ui-button-danger"
+                                                 title="Eliminar">
+                                    <f:setPropertyActionListener value="#{producto}" target="#{productoBean.productoSeleccionado}" />
+                                </p:commandButton>
+                            </div>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+
+                <!-- Diálogo para Editar Producto -->
+                <p:dialog id="editProductDialog" header="Editar Producto" showEffect="fade" modal="true" widgetVar="editProductDialog"
+                          responsive="true" class="rounded-lg shadow-xl" styleClass="dialog-header">
+                    <p:outputPanel id="edit-product-content" class="dialog-content">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="field">
+                                <p:outputLabel for="nombreEdit">Nombre:</p:outputLabel>
+                                <p:inputText id="nombreEdit" value="#{productoBean.productoSeleccionado.nombre}" required="true"
+                                             requiredMessage="El nombre es obligatorio." styleClass="w-full p-2 border border-gray-300 rounded-md"/>
+                                <p:message for="nombreEdit" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="descripcionEdit">Descripción:</p:outputLabel>
+                                <p:inputTextarea id="descripcionEdit" value="#{productoBean.productoSeleccionado.descripcion}" rows="3"
+                                                 styleClass="w-full p-2 border border-gray-300 rounded-md"/>
+                                <p:message for="descripcionEdit" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="precioUnitarioEdit">Precio Unitario:</p:outputLabel>
+                                <p:inputText id="precioUnitarioEdit" value="#{productoBean.productoSeleccionado.precioUnitario}" required="true"
+                                             requiredMessage="El precio es obligatorio." converterMessage="El precio debe ser un número válido."
+                                             styleClass="w-full p-2 border border-gray-300 rounded-md">
+                                    <f:convertNumber type="number" minFractionDigits="2" maxFractionDigits="2"/>
+                                </p:inputText>
+                                <p:message for="precioUnitarioEdit" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="stockEdit">Stock:</p:outputLabel>
+                                <p:inputText id="stockEdit" value="#{productoBean.productoSeleccionado.stock}" required="true"
+                                             requiredMessage="El stock es obligatorio." converterMessage="El stock debe ser un número entero."
+                                             styleClass="w-full p-2 border border-gray-300 rounded-md">
+                                    <f:convertNumber integerOnly="true"/>
+                                </p:inputText>
+                                <p:message for="stockEdit" />
+                            </div>
+                            <div class="field">
+                                <p:outputLabel for="categoriaEdit">Categoría:</p:outputLabel>
+                                <p:selectOneMenu id="categoriaEdit" value="#{productoBean.productoSeleccionado.idCategoria}" required="true"
+                                                 requiredMessage="La categoría es obligatoria." styleClass="w-full">
+                                    <f:selectItem itemLabel="Seleccione una Categoría" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{productoBean.listaCategorias}" var="cat" itemLabel="#{cat.descripcion}" itemValue="#{cat.idCategoria}"/>
+                                </p:selectOneMenu>
+                                <p:message for="categoriaEdit" />
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <div class="ui-dialog-footer">
+                            <p:commandButton value="Guardar Cambios"
+                                             action="#{productoBean.modificarProducto()}"
+                                             update=":productoForm:productosTable :productoForm:messages :productoForm:editProductDialog"
+                                             process="@this :productoForm:editProductDialog"
+                                             oncomplete="if (!args.validationFailed) PF('editProductDialog').hide()"
+                                             styleClass="ui-button ui-button-success mr-2"/>
+                            <p:commandButton value="Cancelar" onclick="PF('editProductDialog').hide()" styleClass="ui-button ui-button-secondary" immediate="true"/>
+                        </div>
+                    </f:facet>
+                </p:dialog>
+
+                <!-- Diálogo de Confirmación de Eliminación -->
+                <p:confirmDialog id="deleteProductDialog" widgetVar="deleteProductDialog" showEffect="fade" width="300"
+                                 message="¿Está seguro de que desea eliminar este producto??" header="Confirmar Eliminación" severity="warn"
+                                 class="rounded-lg shadow-xl" styleClass="dialog-header">
+                    <p:outputPanel id="delete-product-content" class="dialog-content text-center">
+                        <h:outputText value="Producto: #{productoBean.productoSeleccionado.nombre}" rendered="#{productoBean.productoSeleccionado != null}" styleClass="font-semibold"/>
+                    </p:outputPanel>
+                    <f:facet name="footer">
+                        <div class="ui-dialog-footer">
+                            <p:commandButton value="Sí" icon="pi pi-check" action="#{productoBean.eliminarProducto()}"
+                                             update=":productoForm:productosTable :productoForm:messages"
+                                             oncomplete="PF('deleteProductDialog').hide()"
+                                             styleClass="ui-button ui-button-danger mr-2"/>
+                            <p:commandButton value="No" icon="pi pi-times" onclick="PF('deleteProductDialog').hide()"
+                                             styleClass="ui-button ui-button-secondary"/>
+                        </div>
+                    </f:facet>
+                </p:confirmDialog>
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

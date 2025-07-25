@@ -63,7 +63,7 @@ CREATE TABLE Productos (
     idProducto INT PRIMARY KEY AUTO_INCREMENT,
     idCategoria INT,
     nombre VARCHAR(100) NOT NULL,
-    descripción VARCHAR(50),
+    descripcion VARCHAR(50),
     precioUnitario DECIMAL(10,2) NOT NULL,
     stockDisponible INT NOT NULL,
     FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria),
@@ -143,14 +143,13 @@ VALUES
 -- ===========================================================
 INSERT INTO Usuarios (dni, nombre, apellido, correo, telefono, direccion, contrasena, idSexo, idRol)
 VALUES
-('11111111', 'Admin', 'Root', 'admin@bodega.com', '900111111', 'Oficina Principal', 'admin123', 1, 1),
-('22222222', 'Pedro', 'Vargas', 'pedro@bodega.com', '900222222', 'Sucursal Sur', 'pedro123', 1, 2),
-('33333333', 'Mariana', 'Castro', 'mariana@bodega.com', '900333333', 'Sucursal Norte', 'mariana123', 2, 2);
-
+('72189592', 'Mauro Estefano', 'Lazaro Pinco', 'lazarooswaldo948@gmail.com', '938132318', 'CASA', '12345', 1, 1),
+('41748596', 'Mauro Estefano', 'Lazaro Pinco', 'lazarooswaldo948@gmail.com', '938132318', 'CASA', '12345', 1, 1),
+('12345678', 'Mauro Estefano', 'Lazaro Pinco', 'lazarooswaldo948@gmail.com', '938132318', 'CASA', '12345', 1, 1);
 -- ===========================================================
 -- Tabla Productos
 -- ===========================================================
-INSERT INTO Productos (idCategoria, nombre, descripción, precioUnitario, stockDisponible)
+INSERT INTO Productos (idCategoria, nombre, descripcion, precioUnitario, stockDisponible)
 VALUES
 (1, 'Coca Cola 500ml', 'Gaseosa', 3.50, 200),
 (1, 'Pepsi 500ml', 'Gaseosa', 3.30, 150),

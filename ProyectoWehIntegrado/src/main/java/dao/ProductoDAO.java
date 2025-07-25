@@ -35,7 +35,7 @@ public class ProductoDAO implements Serializable {
      */
     public List<Producto> listarProductos() {
         List<Producto> lista = new ArrayList<>();
-        String sql = "SELECT p.idProducto, p.nombre, p.descripción, p.precioUnitario, p.stockDisponible, "
+        String sql = "SELECT p.idProducto, p.nombre, p.descripcion, p.precioUnitario, p.stockDisponible, "
                 + "c.idCategoria, c.descripcion "
                 + "FROM Productos p "
                 + "JOIN Categorias c ON p.idCategoria = c.idCategoria "
@@ -47,7 +47,7 @@ public class ProductoDAO implements Serializable {
                 producto.setIdProducto(rs.getInt("idProducto"));
                 producto.setIdCategoria(rs.getInt("idCategoria"));
                 producto.setNombre(rs.getString("nombre"));
-                producto.setDescripcion(rs.getString("descripción"));
+                producto.setDescripcion(rs.getString("descripcion"));
                 producto.setPrecioUnitario(rs.getBigDecimal("precioUnitario"));
                 producto.setStock(rs.getInt("stockDisponible"));
                 producto.setCategoriaNombre(rs.getString("descripcion"));
@@ -76,11 +76,11 @@ public class ProductoDAO implements Serializable {
             return listarProductos();
         }
 
-        String sql = "SELECT p.idProducto, p.nombre, p.descripción, p.precioUnitario, p.stockDisponible, "
+        String sql = "SELECT p.idProducto, p.nombre, p.descripcion, p.precioUnitario, p.stockDisponible, "
                 + "c.idCategoria, c.descripcion "
                 + "FROM Productos p "
                 + "JOIN Categorias c ON p.idCategoria = c.idCategoria "
-                + "WHERE p.nombre LIKE ? OR p.descripción LIKE ? "
+                + "WHERE p.nombre LIKE ? OR p.descripcion LIKE ? "
                 + "ORDER BY p.idProducto ASC";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -94,7 +94,7 @@ public class ProductoDAO implements Serializable {
                     producto.setIdProducto(rs.getInt("idProducto"));
                     producto.setIdCategoria(rs.getInt("idCategoria"));
                     producto.setNombre(rs.getString("nombre"));
-                    producto.setDescripcion(rs.getString("descripción"));
+                    producto.setDescripcion(rs.getString("descripcion"));
                     producto.setPrecioUnitario(rs.getBigDecimal("precioUnitario"));
                     producto.setStock(rs.getInt("stockDisponible"));
                     producto.setCategoriaNombre(rs.getString("descripcion"));
@@ -118,7 +118,7 @@ public class ProductoDAO implements Serializable {
      * contrario.
      */
     public boolean agregarProducto(Producto producto) {
-        String sql = "INSERT INTO Productos (idCategoria, nombre, descripción, precioUnitario, stockDisponible) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Productos (idCategoria, nombre, descripcion, precioUnitario, stockDisponible) VALUES (?, ?, ?, ?, ?)";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, producto.getIdCategoria());
             ps.setString(2, producto.getNombre());
@@ -169,7 +169,7 @@ public class ProductoDAO implements Serializable {
      * contrario.
      */
     public boolean modificarProducto(Producto producto) {
-        String sql = "UPDATE Productos SET idCategoria = ?, nombre = ?, descripción = ?, precioUnitario = ?, stockDisponible = ? WHERE idProducto = ?";
+        String sql = "UPDATE Productos SET idCategoria = ?, nombre = ?, descripcion = ?, precioUnitario = ?, stockDisponible = ? WHERE idProducto = ?";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, producto.getIdCategoria());
             ps.setString(2, producto.getNombre());
@@ -198,7 +198,7 @@ public class ProductoDAO implements Serializable {
      */
     public Producto obtenerProductoPorId(int idProducto) {
         Producto producto = null;
-        String sql = "SELECT p.idProducto, p.nombre, p.descripción, p.precioUnitario, p.stockDisponible, "
+        String sql = "SELECT p.idProducto, p.nombre, p.descripcion, p.precioUnitario, p.stockDisponible, "
                 + "c.idCategoria, c.descripcion "
                 + "FROM Productos p "
                 + "JOIN Categorias c ON p.idCategoria = c.idCategoria "
@@ -211,7 +211,7 @@ public class ProductoDAO implements Serializable {
                     producto.setIdProducto(rs.getInt("idProducto"));
                     producto.setIdCategoria(rs.getInt("idCategoria"));
                     producto.setNombre(rs.getString("nombre"));
-                    producto.setDescripcion(rs.getString("descripción"));
+                    producto.setDescripcion(rs.getString("descripcion"));
                     producto.setPrecioUnitario(rs.getBigDecimal("precioUnitario"));
                     producto.setStock(rs.getInt("stockDisponible"));
                     producto.setCategoriaNombre(rs.getString("descripcion"));
