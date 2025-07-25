@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/plantilla/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{loginBean.verificarSesion}"/>
+    </f:metadata>
+
+    <ui:define name="titulo">Gestión de Empleados</ui:define>
+
+    <ui:define name="contenido">
+        <h:head>
+            <style>
+                body, html {
+                    font-size: 16px;
+                    min-width: 320px;
+                }
+
+                /* Reducir el margin/padding excesivo del contenedor principal */
+                .b-container {
+                    padding-top: 10px !important;
+                    padding-bottom: 10px !important;
+                }
+
+                /* Estilos mejorados para el jumbotron */
+                .b-jumbotron {
+                    padding: 40px 25px !important; /* Aumentar el padding para un aspecto más llamativo */
+                    margin-bottom: 25px !important; /* Ajustar margen inferior */
+                    background-image: url('img/foto.jpg'); /* Imagen de fondo temática de bodega */
+                    background-size: cover;
+                    background-position: center;
+                    color: #ffffff; /* Color de texto blanco para contraste */
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra de texto para mejor legibilidad */
+                    border-radius: 10px; /* Bordes redondeados */
+                    text-align: center; /* Centrar el texto */
+                }
+
+                .ui-datatable, .ui-datatable * {
+                    font-size: 1rem !important;
+                    line-height: 1.5;
+                }
+                .ui-button, .b-form-group label, .b-form-group input, .b-form-group select {
+                    font-size: 1rem !important;
+                }
+                @media (max-width: 768px) {
+                    .b-jumbotron {
+                        padding: 30px 15px !important; /* Ajuste de padding para móviles */
+                    }
+
+                    .ui-datatable.ui-datatable-reflow .ui-datatable-data td .ui-column-title {
+                        font-weight: bold;
+                        margin-right: 0.5rem;
+                    }
+                    .ui-datatable.ui-datatable-reflow .ui-column-filter {
+                        display: none !important;
+                    }
+                    .action-buttons-group {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 5px;
+                    }
+                    .action-buttons-group .ui-button {
+                        flex-grow: 1;
+                        min-width: 80px;
+                    }
+                }
+                /* Estilos generales para el padding de los paneles */
+                .ui-fluid {
+                    padding: 15px;
+                }
+                /* Estilos para el contenedor del filtro global */
+                .global-filter-container {
+                    margin-bottom: 15px;
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    border-radius: 5px;
+                }
+                .global-filter-container .ui-inputtext {
+                    width: 100%;
+                }
+                /* Estilos para el filtro de columna */
+                .ui-column-filter {
+                    width: 100% !important;
+                    box-sizing: border-box;
+                    margin-top: 5px;
+                }
+                /* Estilos para el cuerpo del panel */
+                .panel-body {
+                    padding: 15px;
+                }
+                /* Estilos para los mensajes de PrimeFaces */
+                .ui-messages {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                }
+                /* Estilos para el pie de página de los diálogos - CORREGIDO */
+                .ui-dialog-footer {
+                    display: flex !important;
+                    justify-content: flex-end !important;
+                    align-items: center !important;
+                    padding: 15px !important;
+                    background-color: #f8f9fa !important;
+                    border-top: 1px solid #e9ecef !important;
+                    position: relative !important;
+                    z-index: 1000 !important;
+                    min-height: 60px !important;
+                    box-sizing: border-box !important;
+                }
+
+                /* Asegurar que los botones del footer se muestren correctamente */
+                .ui-dialog-footer .ui-button {
+                    margin-left: 10px !important;
+                    display: inline-block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                }
+
+                /* Estilos para el diálogo */
+                .ui-dialog {
+                    min-width: 600px !important;
+                }
+
+                .ui-dialog .ui-dialog-content {
+                    padding: 20px !important;
+                }
+
+                /* Estilos para el paginador de la tabla */
+                .ui-paginator {
+                    margin-top: 10px;
+                    text-align: center;
+                }
+                /* Estilos para filas impares de la tabla */
+                .ui-datatable-striped .ui-datatable-odd {
+                    background-color: #f2f2f2 !important;
+                }
+                /* Grupo de botones de acción en la tabla */
+                .action-buttons-group {
+                    display: flex;
+                    gap: 5px;
+                    flex-wrap: nowrap;
+                    justify-content: center;
+                    align-items: center;
+                }
+                /* Ajuste de ancho para los botones en la tabla para evitar truncamiento */
+                .action-buttons-group .ui-button {
+                    min-width: 65px;
+                    padding: 3px 8px;
+                    font-size: 0.9rem;
+                    white-space: nowrap;
+                    box-sizing: border-box;
+                }
+
+                /* Reducir espaciados generales */
+                .b-panel {
+                    margin-bottom: 15px !important;
+                }
+            </style>
+        </h:head>
+
+        <p:remoteCommand name="initPage" action="#{empleadoBean.cargarCatalogos}" 
+                         update="formEmpleado:sexo formEmpleado:rol formEmpleado:formMessages" 
+                         process="@this" 
+                         oncomplete="cargarEmpleados()" />
+        <p:remoteCommand name="cargarEmpleados" action="#{empleadoBean.cargarEmpleados}" 
+                         update="formTablaEmpleados:dataTableEmpleados formTablaEmpleados:tableMessages globalMessages" 
+                         process="@this" />
+        <p:remoteCommand name="actualizarDialogoEditar" action="#{empleadoBean.cargarCatalogos}" 
+                         update="formEditarEmpleado:editSexo formEditarEmpleado:editRol formEditarEmpleado:formEditMessages" 
+                         process="@this" />
+
+        <h:outputScript>
+            document.addEventListener('DOMContentLoaded', function() {
+            initPage();
+            });
+        </h:outputScript>
+
+        <b:container>
+            <h2 style="color: #2C3E50; margin-bottom: 20px; font-weight: bold">Gestión de Empleados</h2>
+
+
+            <p:messages id="globalMessages" globalOnly="true" closable="true" />
+
+            <b:panel title="Agregar Nuevo Empleado" look="primary">
+                <h:form id="formEmpleado">
+                    <p:messages id="formMessages" closable="true" />
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="dni" value="#{empleadoBean.nuevoEmpleado.dni}"
+                                         label="DNI" placeholder="Ingrese el DNI" required="true"
+                                         requiredMessage="El DNI es obligatorio.">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="nombre" value="#{empleadoBean.nuevoEmpleado.nombre}"
+                                         label="Nombre" placeholder="Ingrese el nombre" required="true"
+                                         requiredMessage="El nombre es obligatorio.">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="apellido" value="#{empleadoBean.nuevoEmpleado.apellido}"
+                                         label="Apellido" placeholder="Ingrese el apellido" required="true"
+                                         requiredMessage="El apellido es obligatorio.">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="correo" value="#{empleadoBean.nuevoEmpleado.correo}"
+                                         label="Correo Electrónico" placeholder="Ingrese el correo"
+                                         type="email">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="telefono" value="#{empleadoBean.nuevoEmpleado.telefono}"
+                                         label="Teléfono" placeholder="Ingrese el teléfono">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="direccion" value="#{empleadoBean.nuevoEmpleado.direccion}"
+                                         label="Dirección" placeholder="Ingrese la dirección">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputSecret id="contrasena" value="#{empleadoBean.nuevoEmpleado.contrasena}"
+                                           label="Contraseña" placeholder="Ingrese la contraseña" required="true"
+                                           requiredMessage="La contraseña es obligatoria.">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputSecret>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:selectOneMenu id="sexo" value="#{empleadoBean.nuevoEmpleado.idSexo}"
+                                             label="Sexo" required="true" requiredMessage="El sexo es obligatorio.">
+                                <f:selectItems value="#{empleadoBean.sexosItems}" var="s" itemLabel="#{s.label}" itemValue="#{s.value}" />
+                                <p:ajax event="change" update="sexo formMessages" />
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:selectOneMenu id="rol" value="#{empleadoBean.nuevoEmpleado.idRol}"
+                                             label="Rol" required="true" requiredMessage="El rol es obligatorio.">
+                                <f:selectItems value="#{empleadoBean.rolesItems}" var="r" itemLabel="#{r.label}" itemValue="#{r.value}" />
+                                <p:ajax event="change" update="rol formMessages" />
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" class="text-right">
+                            <b:commandButton value="Guardar Empleado" look="success" icon="save"
+                                             action="#{empleadoBean.guardarEmpleado}"
+                                             update="globalMessages formEmpleado:formMessages formTablaEmpleados:dataTableEmpleados formTablaEmpleados:tableMessages" />
+                        </b:column>
+                    </b:row>
+                </h:form>
+            </b:panel>
+
+            <h:form id="formTablaEmpleados" prependId="false">
+                <b:panel title="Lista de Empleados" look="info">
+                    <p:messages id="tableMessages" closable="true" />
+                    <div class="global-filter-container">
+                        <p:inputText id="globalFilter" value="#{empleadoBean.filtroGlobal}" placeholder="Buscar en tabla...">
+                            <p:ajax event="keyup" listener="#{empleadoBean.cargarEmpleados}" 
+                                    update="dataTableEmpleados globalMessages tableMessages" delay="300" process="@this" />
+                            <p:ajax event="keydown" onstart="if (event.keyCode === 13) { event.preventDefault(); return false; }" process="@this" />
+                        </p:inputText>
+                    </div>
+
+                    <p:dataTable id="dataTableEmpleados"
+                                 value="#{empleadoBean.listaEmpleados}"
+                                 var="empleado"
+                                 styleClass="ui-datatable-striped"
+                                 paginator="true"
+                                 rows="10"
+                                 reflow="true"
+                                 widgetVar="empleadosTableWidget"
+                                 emptyMessage="No hay empleados registrados."
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50">
+                        <p:column headerText="ID" width="10%">
+                            <h:outputText value="#{empleado.idUsuario}" />
+                        </p:column>
+                        <p:column headerText="DNI" width="10%">
+                            <h:outputText value="#{empleado.dni}" />
+                        </p:column>
+                        <p:column headerText="Nombre Completo" width="20%">
+                            <h:outputText value="#{empleado.nombre} #{empleado.apellido}" />
+                        </p:column>
+                        <p:column headerText="Correo" width="20%">
+                            <h:outputText value="#{empleado.correo}" />
+                        </p:column>
+                        <p:column headerText="Teléfono" width="15%">
+                            <h:outputText value="#{empleado.telefono}" />
+                        </p:column>
+                        <p:column headerText="Rol" width="15%">
+                            <h:outputText value="#{empleado.rolDescripcion}" />
+                        </p:column>
+                        <p:column headerText="Acciones" width="10%">                    
+                            <p:commandButton value="Editar" icon="pi pi-pencil" styleClass="ui-button-warning ui-button-flat"
+                                             action="#{empleadoBean.editarEmpleado(empleado)}"
+                                             oncomplete="PF('editarEmpleadoDialog').show(); setTimeout(function() { actualizarDialogoEditar(); }, 50);"
+                                             update="formEditarEmpleado:editDni formEditarEmpleado:editNombre formEditarEmpleado:editApellido formEditarEmpleado:editCorreo formEditarEmpleado:editTelefono formEditarEmpleado:editDireccion formEditarEmpleado:editContrasena formEditarEmpleado:editSexo formEditarEmpleado:editRol formEditarEmpleado:formEditMessages globalMessages tableMessages" />
+                            <p:commandButton id="deleteButton" value="Eliminar" icon="pi pi-trash" styleClass="ui-button-danger ui-button-flat"
+                                             action="#{empleadoBean.prepararEliminacion(empleado)}"
+                                             oncomplete="PF('confirmacionEliminarDialog').show()"
+                                             update=":formTablaEmpleados:confirmacionEliminarDialogContent globalMessages tableMessages" />
+                        </p:column>
+                    </p:dataTable>
+                </b:panel>
+
+                <!-- Modal de confirmación de eliminación -->
+                <p:dialog id="confirmacionEliminarDialog" header="Confirmar Eliminación" widgetVar="confirmacionEliminarDialog"
+                          modal="true" resizable="false" draggable="false" closable="true" showEffect="fade" hideEffect="fade">
+                    <h:panelGroup id="confirmacionEliminarDialogContent" layout="block" styleClass="ui-fluid">
+                        ¿Está seguro de que desea eliminar al empleado <strong>#{empleadoBean.empleadoAEliminar.nombre} #{empleadoBean.empleadoAEliminar.apellido}</strong>?
+                        Esta acción no se puede deshacer.
+                    </h:panelGroup>
+                    <f:facet name="footer">
+                        <div class="ui-dialog-footer">
+                            <p:commandButton value="Cancelar" type="button" onclick="PF('confirmacionEliminarDialog').hide();" 
+                                             icon="pi pi-times" styleClass="ui-button-secondary" />
+                            <p:commandButton value="Sí, Eliminar" icon="pi pi-trash" action="#{empleadoBean.eliminarEmpleado}"
+                                             oncomplete="PF('confirmacionEliminarDialog').hide();"
+                                             update=":formTablaEmpleados:dataTableEmpleados globalMessages tableMessages" 
+                                             styleClass="ui-button-danger" />
+                        </div>
+                    </f:facet>
+                </p:dialog>
+            </h:form>
+
+            <!-- Modal de edición de empleado -->
+            <p:dialog id="editarEmpleadoDialog" header="Editar Empleado" widgetVar="editarEmpleadoDialog"
+                      modal="true" resizable="false" draggable="false" closable="true" showEffect="fade" hideEffect="fade">
+                <h:form id="formEditarEmpleado">
+                    <p:messages id="formEditMessages" closable="true" />
+                    <h:inputHidden value="#{empleadoBean.nuevoEmpleado.idUsuario}" />
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editDni" value="#{empleadoBean.nuevoEmpleado.dni}"
+                                         label="DNI" placeholder="Ingrese el DNI" required="true"
+                                         requiredMessage="El DNI es obligatorio.">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editNombre" value="#{empleadoBean.nuevoEmpleado.nombre}"
+                                         label="Nombre" placeholder="Ingrese el nombre" required="true"
+                                         requiredMessage="El nombre es obligatorio.">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editApellido" value="#{empleadoBean.nuevoEmpleado.apellido}"
+                                         label="Apellido" placeholder="Ingrese el apellido" required="true"
+                                         requiredMessage="El apellido es obligatorio.">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editCorreo" value="#{empleadoBean.nuevoEmpleado.correo}"
+                                         label="Correo Electrónico" placeholder="Ingrese el correo"
+                                         type="email">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editTelefono" value="#{empleadoBean.nuevoEmpleado.telefono}"
+                                         label="Teléfono" placeholder="Ingrese el teléfono">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editDireccion" value="#{empleadoBean.nuevoEmpleado.direccion}"
+                                         label="Dirección" placeholder="Ingrese la dirección">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputSecret id="editContrasena" value="#{empleadoBean.nuevoEmpleado.contrasena}"
+                                           label="Contraseña" placeholder="Ingrese la nueva contraseña (opcional)" />
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:selectOneMenu id="editSexo" value="#{empleadoBean.nuevoEmpleado.idSexo}"
+                                             label="Sexo" required="true" requiredMessage="El sexo es obligatorio.">
+                                <f:selectItems value="#{empleadoBean.sexosItems}" var="s" itemLabel="#{s.label}" itemValue="#{s.value}" />
+                                <p:ajax event="change" update="editSexo formEditMessages" />
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:selectOneMenu id="editRol" value="#{empleadoBean.nuevoEmpleado.idRol}"
+                                             label="Rol" required="true" requiredMessage="El rol es obligatorio.">
+                                <f:selectItems value="#{empleadoBean.rolesItems}" var="r" itemLabel="#{r.label}" itemValue="#{r.value}" />
+                                <p:ajax event="change" update="editRol formEditMessages" />
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                </h:form>
+                <f:facet name="footer">
+                    <div class="ui-dialog-footer">
+                        <p:commandButton value="Cancelar" type="button" onclick="PF('editarEmpleadoDialog').hide();" 
+                                         icon="pi pi-times" styleClass="ui-button-secondary" />
+                        <p:commandButton value="Guardar Cambios" icon="pi pi-save" 
+                                         action="#{empleadoBean.guardarEmpleado}"
+                                         oncomplete="PF('editarEmpleadoDialog').hide();"
+                                         update=":formTablaEmpleados:dataTableEmpleados globalMessages :formEditarEmpleado:formEditMessages tableMessages" 
+                                         styleClass="ui-button-success" />
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </b:container>
+    </ui:define>
+</ui:composition>

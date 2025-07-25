@@ -3,7 +3,7 @@ package beans;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
-import modelo.Usuario;
+import modelo.Empleado;
 import dao.ValidarUsuarioDao;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpSession;
@@ -12,14 +12,14 @@ import jakarta.servlet.http.HttpSession;
 @SessionScoped
 public class LoginBean implements Serializable {
 
-    private Usuario usuario = new Usuario();
+    private Empleado usuario = new Empleado();
     private ValidarUsuarioDao dao = new ValidarUsuarioDao();
 
-    public Usuario getUsuario() {
+    public Empleado getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(Empleado usuario) {
         this.usuario = usuario;
     }
 

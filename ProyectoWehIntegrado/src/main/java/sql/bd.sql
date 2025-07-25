@@ -14,7 +14,7 @@ CREATE TABLE Sexos (
 -- Tabla Roles: Define roles para los usuarios del sistema
 CREATE TABLE Roles (
     idRol INT PRIMARY KEY AUTO_INCREMENT,
-    descripción VARCHAR(50) NOT NULL
+    descripcion VARCHAR(50) NOT NULL
 );
 
 -- Tabla Clientes: Registra información de clientes
@@ -105,7 +105,7 @@ INSERT INTO Sexos (descripcion) VALUES
 -- ===========================================================
 -- Tabla Roles
 -- ===========================================================
-INSERT INTO Roles (descripción) VALUES
+INSERT INTO Roles (descripcion) VALUES
 ('Administrador'),
 ('Vendedor');
 

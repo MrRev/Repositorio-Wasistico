@@ -11,7 +11,7 @@
             <f:metadata>
                 <f:event type="preRenderView" listener="#{loginBean.verificarSesion}"/>
             </f:metadata>
-            <h2>Dashboard Principal</h2>
+            <h1 style="color: #2C3E50; margin-bottom: 20px; font-weight: bold">Dashboard Principal</h1>
             <b:row>
                 <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
                     <b:panel title="Total de Clientes" style="text-align:center;">
@@ -39,7 +39,7 @@
             <b:row>
                 <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
                     <b:panel title="Ingresos Totales" style="text-align:center;">
-                        <b:badge value="#{dashboardBean.totalIngresos}" style="font-size: 2.5rem; padding: 1rem; background-color: #c0392b; color: white;"/>
+                        <b:badge value="S/. #{dashboardBean.totalIngresos}" style="font-size: 2.5rem; padding: 1rem; background-color: #c0392b; color: white;"/>
                     </b:panel>
                 </b:column>
                 <b:column col-md="12" col-lg="6" style="margin-bottom: 1rem;">
@@ -49,7 +49,7 @@
                 </b:column>
             </b:row>
             <!-- Gráficos de PrimeFaces -->
-            <h2>Graficos</h2>
+            <h1 style="color: #2C3E50; margin-bottom: 20px; font-weight: bold">Graficos</h1>
             <b:row>
                 <b:column col-xs="12" col-lg="6" style="margin-bottom: 2rem;">
                     <p:panel header="Ventas por Categoría" styleClass="grafico-panel">
@@ -62,7 +62,7 @@
                         <p:barChart id="barChartProductos" model="#{dashboardBean.barModelProductosMasVendidos}" style="width:100%; height:300px;"/>
                     </p:panel>
                 </b:column>
-            </b:row>
+            </b:row>
         </b:container>
     </ui:define>
 </ui:composition>

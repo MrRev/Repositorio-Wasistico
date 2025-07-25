@@ -3,19 +3,20 @@
                 xmlns:b="http://bootsfaces.net/ui"
                 xmlns:h="jakarta.faces.html"
                 xmlns:ui="http://java.sun.com/jsf/facelets">
-    <b:navBar brand="Bienvenido #{loginBean.usuario.nombre} #{loginBean.usuario.apellido}"
+    <b:navBar brandStyleClass="mi-brand"
+              brand="Bienvenido #{loginBean.usuario.nombre} #{loginBean.usuario.apellido}"
               brand-href="perfil.xhtml"
               inverse="true"
               fluid="true"
-              styleClass="mt-0 mb-0" 
-              style="background-color:#343a40;border-radius:0;">
+              styleClass="mt-0 mb-0"
+              style="background-color:#0A02D3;border-radius:0;">
         <b:navbarLinks>
             <b:navLink value="Inicio"      href="principal.xhtml"   iconAwesome="home"        style="color:white;"/>
             <b:navLink value="Ventas"      href="venta.xhtml"       iconAwesome="shopping-cart" style="color:white;"/>
             <b:navLink value="Clientes"    href="cliente.xhtml"     iconAwesome="users"       style="color:white;"/>
             <b:navLink value="Productos"   href="producto.xhtml"    iconAwesome="cubes"       style="color:white;"/>
             <b:navLink value="Categorías"  href="categoria.xhtml"   iconAwesome="tags"        style="color:white;"/>
-            <b:navLink value="Empleados"   href="usuario.xhtml"     iconAwesome="user"        style="color:white;"/>
+            <b:navLink value="Empleados"   href="empleado.xhtml"     iconAwesome="user"        style="color:white;"/>
         </b:navbarLinks>
         <b:navbarLinks pull="right">
             <h:form style="display:inline;">

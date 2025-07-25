@@ -3,9 +3,55 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:b="http://bootsfaces.net/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
         <ui:define name="titulo">Bodega Don Pablo</ui:define>
-        <title>Dashboard Template con BootsFaces</title>
+        <title>Dashboard</title>
         <meta name="author" content="Generado con BootsFaces" />
         <style>
+            /* Enlaces nav-link: blanco por defecto */
+            .navbar .navbar-nav .nav-link,
+            .navbar .navbar-nav .nav-link:visited,
+            .navbar .navbar-nav .nav-link.active,
+            .navbar .navbar-nav .nav-link:active {
+                color: #FFFFFF !important; /* Blanco puro */
+                transition: color 0.3s ease-in-out;
+            }
+
+            /* Hover y focus: amarillo vibrante #FAFA1D */
+            .navbar .navbar-nav .nav-link:hover,
+            .navbar .navbar-nav .nav-link:focus {
+                color: #FAFA1D !important;
+                background-color: transparent !important;
+            }
+
+            /* Brand: blanco por defecto */
+            .mi-brand.navbar-brand,
+            .mi-brand.navbar-brand:visited,
+            .mi-brand.navbar-brand.active,
+            .mi-brand.navbar-brand:active {
+                color: #FFFFFF !important;
+                transition: color 0.3s ease-in-out;
+            }
+
+            /* Hover y focus del brand: amarillo #FAFA1D */
+            .mi-brand.navbar-brand:hover,
+            .mi-brand.navbar-brand:focus {
+                color: #FAFA1D !important;
+                background-color: transparent !important;
+            }
+
+            /* Mantener fondo azul y eliminar borde o sombra */
+            .navbar,
+            .navbar-inverse {
+                background-color: #0A02D3 !important; /* Fondo azul */
+                border-bottom: none !important;
+                box-shadow: none !important;
+            }
+
+            /* Forzar color blanco en íconos (si es necesario) */
+            .navbar .navbar-nav .nav-link .fa,
+            .navbar .navbar-nav .nav-link i {
+                color: #FFFFFF !important;
+            }
+
             html, body {
                 height: 100vh;
                 margin: 0;
@@ -23,17 +69,16 @@
                 align-items: center;
                 justify-content: center;
                 height: auto; /* Cambiado para que el header se adapte */
-                background-color: #222;
+                background-color: #0A02D3;
                 padding: 10px;
                 flex-shrink: 0;
                 text-align: center; /* Asegura que el texto esté centrado */
-                color: white; /* Asegura que el texto sea legible */
+                color: #FAFAFA; /* Asegura que el texto sea legible */
                 font-size: 1.5em; /* Tamaño de fuente adaptable */
             }
             .navbar-top {
                 font-size: 18px !important;
                 height: 20%;
-                background-color: #333;
                 padding: 20px;
                 display: flex;
                 align-items: center;
@@ -63,7 +108,7 @@
             }
             .footer {
                 height: 5%;
-                background-color: #444;
+                background-color: #0A02D3;
                 color: white;
                 padding: 10px;
                 text-align: center; /* Asegura que el texto esté centrado */
@@ -105,9 +150,8 @@
         <div class="container-full">
             <!-- Header -->
             <div class="header">
-                <h2>Bodega Don Pablo</h2> <!-- Header responsivo -->
+                <p><h1 style="color: #FAFAFA; margin-bottom: 20px; font-weight: bold">Bodega </h1> <h1 style="color: #0A02D3;"> a </h1> <h1 style="color: #FAFA1D; margin-bottom: 20px; font-weight: bold"> Don Pablo</h1></p>
             </div>
-
             <!-- Navbar Superior -->
             <ui:insert name="navbar-top">
                 <ui:include src="/plantilla/sidebar.xhtml"/>
@@ -117,7 +161,7 @@
             <div class="content">
                 <ui:insert name="contenido"/>
             </div>
-            
+
             <!-- Footer -->
             <div class="footer">
                 <ui:insert name="footer">
