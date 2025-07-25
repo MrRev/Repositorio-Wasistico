@@ -21,6 +21,7 @@ modelo\Empleado.class
 beans\EmpleadoBean.class
 dao\CategoriaDAO.class
 modelo\Sexo.class
+util\DniApiService.class
 modelo\Cliente.class
 modelo\Persona.class
 modelo\Producto.class

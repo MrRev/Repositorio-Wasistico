@@ -3,8 +3,8 @@ package modelo;
 import java.io.Serializable;
 
 /**
- * Clase de modelo para representar un Empleado (Usuario del sistema).
- * Implementa Serializable para ser compatible con JSF y CDI en diferentes ámbitos.
+ * Clase para representar un empleado (usuario del sistema). Implementa
+ * Serializable para ser compatible con JSF y CDI en diferentes ámbitos.
  */
 public class Empleado implements Serializable {
 
@@ -17,17 +17,36 @@ public class Empleado implements Serializable {
     private String correo;
     private String telefono;
     private String direccion;
-    private String contrasena; // En una aplicación real, esto debería ser un hash
+    private String contrasena; // NOTA IMPORTANTE: En una aplicación real, esto DEBERÍA ser un hash (ej. BCrypt) por seguridad.
     private int idSexo;
     private int idRol;
-    private String rolDescripcion; // Nuevo campo para almacenar la descripción del rol
+    private String rolDescripcion; // Campo para almacenar la descripción del rol (obtenido de la tabla Roles)
 
-    // Constructor por defecto (necesario para JSF/CDI)
+    /**
+     * Constructor vacío necesario para JSF/CDI.
+     */
     public Empleado() {
     }
 
-    // Constructor completo (sin idUsuario para nuevas inserciones)
-    public Empleado(String dni, String nombre, String apellido, String correo, String telefono, String direccion, String contrasena, int idSexo, int idRol) {
+    /**
+     * Constructor para crear un nuevo empleado, sin idUsuario (ya que será
+     * autogenerado por la DB).
+     *
+     * @param dni El DNI del empleado.
+     * @param nombre El nombre del empleado.
+     * @param apellido El apellido del empleado.
+     * @param correo El correo electrónico del empleado.
+     * @param telefono El número de teléfono del empleado.
+     * @param direccion La dirección del empleado.
+     * @param contrasena La contraseña del empleado (considerar hashing en
+     * producción).
+     * @param idSexo El ID del sexo del empleado.
+     * @param idRol El ID del rol del empleado.
+     */
+    public Empleado(String dni, String nombre, String apellido,
+            String correo, String telefono,
+            String direccion, String contrasena,
+            int idSexo, int idRol) {
         this.dni = dni;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -39,36 +58,78 @@ public class Empleado implements Serializable {
         this.idRol = idRol;
     }
 
-    // Constructor completo (con idUsuario para recuperación o actualización)
-    public Empleado(int idUsuario, String dni, String nombre, String apellido, String correo, String telefono, String direccion, String contrasena, int idSexo, int idRol) {
+    /**
+     * Constructor cuando ya tienes idUsuario (por ejemplo, al recuperar de la
+     * DB o al editar). Utiliza el constructor anterior para inicializar los
+     * campos comunes.
+     *
+     * @param idUsuario El ID único del empleado.
+     * @param dni El DNI del empleado.
+     * @param nombre El nombre del empleado.
+     * @param apellido El apellido del empleado.
+     * @param correo El correo electrónico del empleado.
+     * @param telefono El número de teléfono del empleado.
+     * @param direccion La dirección del empleado.
+     * @param contrasena La contraseña del empleado (considerar hashing en
+     * producción).
+     * @param idSexo El ID del sexo del empleado.
+     * @param idRol El ID del rol del empleado.
+     */
+    public Empleado(int idUsuario, String dni, String nombre,
+            String apellido, String correo, String telefono,
+            String direccion, String contrasena,
+            int idSexo, int idRol) {
+        this(dni, nombre, apellido, correo, telefono, direccion, contrasena, idSexo, idRol);
         this.idUsuario = idUsuario;
-        this.dni = dni;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.correo = correo;
-        this.telefono = telefono;
-        this.direccion = direccion;
-        this.contrasena = contrasena;
-        this.idSexo = idSexo;
-        this.idRol = idRol;
     }
 
-    // Constructor completo con rolDescripcion (para mapeo desde la DB)
-    public Empleado(int idUsuario, String dni, String nombre, String apellido, String correo, String telefono, String direccion, String contrasena, int idSexo, int idRol, String rolDescripcion) {
-        this.idUsuario = idUsuario;
-        this.dni = dni;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.correo = correo;
-        this.telefono = telefono;
-        this.direccion = direccion;
-        this.contrasena = contrasena;
-        this.idSexo = idSexo;
-        this.idRol = idRol;
+    /**
+     * Constructor completo con descripción del rol incluida. Útil para mapear
+     * resultados de consultas que hacen JOIN con la tabla de Roles.
+     *
+     * @param idUsuario El ID único del empleado.
+     * @param dni El DNI del empleado.
+     * @param nombre El nombre del empleado.
+     * @param apellido El apellido del empleado.
+     * @param correo El correo electrónico del empleado.
+     * @param telefono El número de teléfono del empleado.
+     * @param direccion La dirección del empleado.
+     * @param contrasena La contraseña del empleado (considerar hashing en
+     * producción).
+     * @param idSexo El ID del sexo del empleado.
+     * @param idRol El ID del rol del empleado.
+     * @param rolDescripcion La descripción textual del rol del empleado.
+     */
+    public Empleado(int idUsuario, String dni, String nombre,
+            String apellido, String correo, String telefono,
+            String direccion, String contrasena,
+            int idSexo, int idRol, String rolDescripcion) {
+        this(idUsuario, dni, nombre, apellido, correo, telefono, direccion, contrasena, idSexo, idRol);
         this.rolDescripcion = rolDescripcion;
     }
 
-    // --- Getters y Setters ---
+    /**
+     * Crea un nuevo objeto Empleado copiando los valores de otro objeto
+     * Empleado. Útil para operaciones de edición donde se desea una copia
+     * mutable.
+     *
+     * @param src El objeto Empleado fuente del cual copiar los valores.
+     */
+    public Empleado(Empleado src) {
+        this.idUsuario = src.idUsuario;
+        this.dni = src.dni;
+        this.nombre = src.nombre;
+        this.apellido = src.apellido;
+        this.correo = src.correo;
+        this.telefono = src.telefono;
+        this.direccion = src.direccion;
+        this.contrasena = src.contrasena;
+        this.idSexo = src.idSexo;
+        this.idRol = src.idRol;
+        this.rolDescripcion = src.rolDescripcion;
+    }
+
+    // GETTERS y SETTERS — permiten obtener o fijar cada campo
     public int getIdUsuario() {
         return idUsuario;
     }

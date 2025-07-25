@@ -184,24 +184,43 @@
         <b:container>
             <h2 style="color: #2C3E50; margin-bottom: 20px; font-weight: bold">Gestión de Empleados</h2>
 
-
             <p:messages id="globalMessages" globalOnly="true" closable="true" />
-
+            <!-- form agregar -->
+            <!-- Sección del formulario para agregar nuevo empleado -->
             <b:panel title="Agregar Nuevo Empleado" look="primary">
                 <h:form id="formEmpleado">
                     <p:messages id="formMessages" closable="true" />
                     <b:row>
                         <b:column col-xs="12" col-sm="6">
-                            <b:inputText id="dni" value="#{empleadoBean.nuevoEmpleado.dni}"
-                                         label="DNI" placeholder="Ingrese el DNI" required="true"
-                                         requiredMessage="El DNI es obligatorio.">
-                                <p:ajax event="blur" update="formMessages" />
-                            </b:inputText>
+                            <!-- Contenedor para alinear DNI y botón usando b:row y b:column -->
+                            <b:formGroup>
+                                <b:row>
+                                    <b:column col-xs="8"> <!-- Ajusta el ancho según sea necesario -->
+                                        <b:inputText id="dni" value="#{empleadoBean.nuevoEmpleado.dni}"
+                                                     label="DNI"
+                                                     placeholder="Ingrese el DNI"
+                                                     required="true" requiredMessage="El DNI es obligatorio.">
+                                            <!-- Este ajax es para la validación básica al salir del campo -->
+                                            <p:ajax event="blur" update="formMessages" />
+                                        </b:inputText>
+                                    </b:column>
+                                    <b:column col-xs="4"> <!-- Ajusta el ancho según sea necesario -->
+                                        <!-- Nuevo botón para validar DNI -->
+                                        <p:commandButton value="Validar DNI" icon="pi pi-search" styleClass="ui-button-info"
+                                                         action="#{empleadoBean.consultarDniParaEmpleado}"
+                                                         update="nombre apellido formMessages globalMessages"
+                                                         process="dni @this"
+                                                         onstart="console.log('Iniciando consulta de DNI para agregar empleado...');"
+                                                         oncomplete="console.log('Consulta de DNI para agregar empleado completada.');" />
+                                    </b:column>
+                                </b:row>
+                            </b:formGroup>
                         </b:column>
                         <b:column col-xs="12" col-sm="6">
                             <b:inputText id="nombre" value="#{empleadoBean.nuevoEmpleado.nombre}"
                                          label="Nombre" placeholder="Ingrese el nombre" required="true"
-                                         requiredMessage="El nombre es obligatorio.">
+                                         requiredMessage="El nombre es obligatorio."
+                                         disabled="#{empleadoBean.datosCargadosDesdeApi}">
                                 <p:ajax event="blur" update="formMessages" />
                             </b:inputText>
                         </b:column>
@@ -210,7 +229,8 @@
                         <b:column col-xs="12" col-sm="6">
                             <b:inputText id="apellido" value="#{empleadoBean.nuevoEmpleado.apellido}"
                                          label="Apellido" placeholder="Ingrese el apellido" required="true"
-                                         requiredMessage="El apellido es obligatorio.">
+                                         requiredMessage="El apellido es obligatorio."
+                                         disabled="#{empleadoBean.datosCargadosDesdeApi}">
                                 <p:ajax event="blur" update="formMessages" />
                             </b:inputText>
                         </b:column>
@@ -265,12 +285,13 @@
                         <b:column col-xs="12" class="text-right">
                             <b:commandButton value="Guardar Empleado" look="success" icon="save"
                                              action="#{empleadoBean.guardarEmpleado}"
-                                             update="globalMessages formEmpleado:formMessages formTablaEmpleados:dataTableEmpleados formTablaEmpleados:tableMessages" />
+                                             update="globalMessages formEmpleado formTablaEmpleados:dataTableEmpleados formTablaEmpleados:tableMessages" /> <!-- CAMBIO AQUÍ: Se agregó 'formEmpleado' para limpiar el formulario -->
                         </b:column>
                     </b:row>
                 </h:form>
             </b:panel>
 
+            <!-- tble empledo -->
             <h:form id="formTablaEmpleados" prependId="false">
                 <b:panel title="Lista de Empleados" look="info">
                     <p:messages id="tableMessages" closable="true" />
