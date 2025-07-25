@@ -1,22 +1,29 @@
 package modelo;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.math.BigDecimal; // Importar BigDecimal
 
 /**
+ * Modelo que representa una Venta en la base de datos.
  *
  * @author Muaro
  */
-public class Venta {
+public class Venta implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private int idVenta;
     private int idCliente;
     private int idUsuario;
     private Date fechaVenta;
     private Date fechaCreacion;
-    private double total;
+    private BigDecimal total; // Cambiado a BigDecimal
 
-    public Venta() {}
+    public Venta() {
+    }
 
-    public Venta(int idVenta, int idCliente, int idUsuario, Date fechaVenta, Date fechaCreacion, double total) {
+    public Venta(int idVenta, int idCliente, int idUsuario, Date fechaVenta, Date fechaCreacion, BigDecimal total) {
         this.idVenta = idVenta;
         this.idCliente = idCliente;
         this.idUsuario = idUsuario;
@@ -25,6 +32,7 @@ public class Venta {
         this.total = total;
     }
 
+    // Getters y Setters
     public int getIdVenta() {
         return idVenta;
     }
@@ -65,11 +73,23 @@ public class Venta {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    @Override
+    public String toString() {
+        return "Venta{"
+                + "idVenta=" + idVenta
+                + ", idCliente=" + idCliente
+                + ", idUsuario=" + idUsuario
+                + ", fechaVenta=" + fechaVenta
+                + ", fechaCreacion=" + fechaCreacion
+                + ", total=" + total
+                + '}';
     }
 }

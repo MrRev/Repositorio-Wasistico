@@ -6,6 +6,7 @@ beans\IdiomaBean.class
 beans\CategoriaBean.class
 beans\ClienteBean.class
 dao\ClienteDAO.class
+dao\DetalleVentaDAO.class
 com\mycompany\proyectowehintegrado\resources\JakartaEE10Resource.class
 dao\CatalogoDAO.class
 dao\VentaDAO.class
@@ -15,9 +16,11 @@ modelo\Venta.class
 modelo\Categoria.class
 modelo\DetalleVenta.class
 dao\EmpleadoDAO.class
+beans\PerfilEmpleadoBean.class
 dao\DashboardDAO.class
 conf\Conexion.class
 modelo\Empleado.class
+beans\VentaBean.class
 beans\EmpleadoBean.class
 dao\CategoriaDAO.class
 modelo\Sexo.class

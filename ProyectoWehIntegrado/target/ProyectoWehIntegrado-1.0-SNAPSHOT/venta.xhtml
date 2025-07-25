@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/plantilla/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{loginBean.verificarSesion}"/>
+    </f:metadata>
+
+    <ui:define name="titulo">Realizar Venta</ui:define>
+
+    <ui:define name="contenido">
+        <h:head>
+            <style>
+                body, html {
+                    font-size: 16px;
+                    min-width: 320px;
+                }
+
+                /* Reducir el margin/padding excesivo del contenedor principal */
+                .b-container {
+                    padding-top: 10px !important;
+                    padding-bottom: 10px !important;
+                }
+
+                /* Estilos mejorados para el jumbotron */
+                .b-jumbotron {
+                    padding: 40px 25px !important;
+                    margin-bottom: 25px !important;
+                    background-image: url('img/foto.jpg');
+                    background-size: cover;
+                    background-position: center;
+                    color: #ffffff;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+                    border-radius: 10px;
+                    text-align: center;
+                }
+
+                .ui-datatable, .ui-datatable * {
+                    font-size: 1rem !important;
+                    line-height: 1.5;
+                }
+                .ui-button, .b-form-group label, .b-form-group input, .b-form-group select {
+                    font-size: 1rem !important;
+                }
+                @media (max-width: 768px) {
+                    .b-jumbotron {
+                        padding: 30px 15px !important;
+                    }
+
+                    .ui-datatable.ui-datatable-reflow .ui-datatable-data td .ui-column-title {
+                        font-weight: bold;
+                        margin-right: 0.5rem;
+                    }
+                    .ui-datatable.ui-datatable-reflow .ui-column-filter {
+                        display: none !important;
+                    }
+                    .action-buttons-group {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 5px;
+                    }
+                    .action-buttons-group .ui-button {
+                        flex-grow: 1;
+                        min-width: 80px;
+                    }
+                }
+                /* Estilos generales para el padding de los paneles */
+                .ui-fluid {
+                    padding: 15px;
+                }
+                /* Estilos para el contenedor del filtro global */
+                .global-filter-container {
+                    margin-bottom: 15px;
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    border-radius: 5px;
+                }
+                .global-filter-container .ui-inputtext {
+                    width: 100%;
+                }
+                /* Estilos para el filtro de columna */
+                .ui-column-filter {
+                    width: 100% !important;
+                    box-sizing: border-box;
+                    margin-top: 5px;
+                }
+                /* Estilos para el cuerpo del panel */
+                .panel-body {
+                    padding: 15px;
+                }
+                /* Estilos para los mensajes de PrimeFaces */
+                .ui-messages {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                }
+                /* Estilos para el pie de página de los diálogos */
+                .ui-dialog-footer {
+                    display: flex !important;
+                    justify-content: flex-end !important;
+                    align-items: center !important;
+                    padding: 15px !important;
+                    background-color: #f8f9fa !important;
+                    border-top: 1px solid #e9ecef !important;
+                    position: relative !important;
+                    z-index: 1000 !important;
+                    min-height: 60px !important;
+                    box-sizing: border-box !important;
+                }
+
+                /* Asegurar que los botones del footer se muestren correctamente */
+                .ui-dialog-footer .ui-button {
+                    margin-left: 10px !important;
+                    display: inline-block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                }
+
+                /* Estilos para el diálogo */
+                .ui-dialog {
+                    min-width: 600px !important;
+                }
+
+                .ui-dialog .ui-dialog-content {
+                    padding: 20px !important;
+                }
+
+                /* Estilos para el paginador de la tabla */
+                .ui-paginator {
+                    margin-top: 10px;
+                    text-align: center;
+                }
+                /* Estilos para filas impares de la tabla */
+                .ui-datatable-striped .ui-datatable-odd {
+                    background-color: #f2f2f2 !important;
+                }
+                /* Grupo de botones de acción en la tabla */
+                .action-buttons-group {
+                    display: flex;
+                    gap: 5px;
+                    flex-wrap: nowrap;
+                    justify-content: center;
+                    align-items: center;
+                }
+                /* Ajuste de ancho para los botones en la tabla */
+                .action-buttons-group .ui-button {
+                    min-width: 65px;
+                    padding: 3px 8px;
+                    font-size: 0.9rem;
+                    white-space: nowrap;
+                    box-sizing: border-box;
+                }
+
+                /* Reducir espaciados generales */
+                .b-panel {
+                    margin-bottom: 15px !important;
+                }
+                /* Estilos específicos para la tabla de carrito */
+                .carrito-table .ui-column-header,
+                .carrito-table .ui-column-footer {
+                    background-color: #e0f7fa !important;
+                    color: #00796b !important;
+                    font-weight: bold;
+                }
+                .carrito-total {
+                    font-size: 1.5em;
+                    font-weight: bold;
+                    color: #28a745;
+                    text-align: right;
+                    padding: 10px 0;
+                }
+            </style>
+        </h:head>
+
+        <!-- Remote Commands para inicializar y actualizar el bean -->
+        <p:remoteCommand name="initVentaPage" action="#{ventaBean.init}"
+                         update="globalMessages formSeleccionCliente formSeleccionProductos formCarrito formResumenVenta"
+                         process="@this"
+                         oncomplete="console.log('VentaBean inicializado.');" />
+
+        <h:outputScript>
+            document.addEventListener('DOMContentLoaded', function() {
+            initVentaPage();
+            });
+        </h:outputScript>
+
+        <b:container>
+            <h2 style="color: #2C3E50; margin-bottom: 20px; font-weight: bold">Realizar Venta</h2>
+
+            <p:messages id="globalMessages" globalOnly="true" closable="true" />
+
+            <!-- Sección 1: Selección de Cliente -->
+            <b:panel title="1. Seleccionar Cliente" look="primary">
+                <h:form id="formSeleccionCliente">
+                    <p:messages id="clienteMessages" closable="true" />
+
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="filtroCliente" value="#{ventaBean.filtroClienteDni}"
+                                         label="Buscar Cliente (DNI/Nombre)"
+                                         placeholder="Ingrese DNI o nombre para buscar">
+                                <p:ajax event="keyup" listener="#{ventaBean.cargarClientesDisponibles}"
+                                        update="clientesDataTable clienteMessages" delay="300" process="@this" />
+                                <p:ajax event="keydown" onstart="if (event.keyCode === 13) { event.preventDefault(); return false; }" process="@this" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <h:panelGroup layout="block" styleClass="form-group" style="margin-top: 25px;">
+                                <p:commandButton value="Nuevo Cliente" icon="pi pi-user-plus" styleClass="ui-button-info"
+                                                 action="/cliente.xhtml?faces-redirect=true" />
+                            </h:panelGroup>
+                        </b:column>
+                    </b:row>
+
+                    <p:dataTable id="clientesDataTable"
+                                 value="#{ventaBean.clientesDisponibles}"
+                                 var="cli"
+                                 styleClass="ui-datatable-striped"
+                                 paginator="true"
+                                 rows="5"
+                                 reflow="true"
+                                 emptyMessage="No hay clientes disponibles."
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <p:column headerText="ID" width="10%">
+                            <h:outputText value="#{cli.idCliente}" />
+                        </p:column>
+                        <p:column headerText="DNI" width="15%">
+                            <h:outputText value="#{cli.dni}" />
+                        </p:column>
+                        <p:column headerText="Nombre Completo" width="40%">
+                            <h:outputText value="#{cli.nombre} #{cli.apellido}" />
+                        </p:column>
+                        <p:column headerText="Acciones" width="15%">
+                            <p:commandButton value="Seleccionar" icon="pi pi-check" styleClass="ui-button-success ui-button-flat"
+                                             action="#{ventaBean.seleccionarCliente(cli)}"
+                                             update="formSeleccionCliente:clienteSeleccionadoPanel formSeleccionCliente:clienteMessages globalMessages" />
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:panelGroup id="clienteSeleccionadoPanel" layout="block" style="margin-top: 20px;">
+                        <h:panelGroup rendered="#{ventaBean.clienteSeleccionado != null}">
+                            <h4 style="color: #333; margin-bottom: 10px;">Cliente Seleccionado:</h4>
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                <h:outputText value="DNI:" style="font-weight: bold;"/>
+                                <h:outputText value="#{ventaBean.clienteSeleccionado.dni}"/>
+
+                                <h:outputText value="Nombre:" style="font-weight: bold;"/>
+                                <h:outputText value="#{ventaBean.clienteSeleccionado.nombre} #{ventaBean.clienteSeleccionado.apellido}"/>
+
+                                <h:outputText value="Correo:" style="font-weight: bold;"/>
+                                <h:outputText value="#{ventaBean.clienteSeleccionado.correo}"/>
+                            </p:panelGrid>
+                            <p:commandButton value="Cambiar Cliente" icon="pi pi-undo" styleClass="ui-button-secondary"
+                                             action="#{ventaBean.setClienteSeleccionado(null)}"
+                                             update="formSeleccionCliente:clienteSeleccionadoPanel formSeleccionCliente:clienteMessages globalMessages" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{ventaBean.clienteSeleccionado == null}">
+                            <h4 style="color: #6c757d;">Ningún cliente seleccionado.</h4>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                </h:form>
+            </b:panel>
+
+            <!-- Sección 2: Añadir Productos al Carrito -->
+            <b:panel title="2. Añadir Productos al Carrito" look="info">
+                <h:form id="formSeleccionProductos">
+                    <p:messages id="productoMessages" closable="true" />
+
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="filtroProducto" value="#{ventaBean.filtroProductoNombre}"
+                                         label="Buscar Producto (Nombre/Descripción)"
+                                         placeholder="Ingrese nombre o descripción">
+                                <p:ajax event="keyup" listener="#{ventaBean.cargarProductosDisponibles}"
+                                        update="productosDataTable formSeleccionProductos:productoMessages" delay="300" process="@this" />
+                                <p:ajax event="keydown" onstart="if (event.keyCode === 13) { event.preventDefault(); return false; }" process="@this" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+
+                    <p:dataTable id="productosDataTable"
+                                 value="#{ventaBean.productosDisponibles}"
+                                 var="prod"
+                                 selectionMode="single"
+                                 selection="#{ventaBean.productoSeleccionadoParaCarrito}"
+                                 rowKey="#{prod.idProducto}"
+                                 styleClass="ui-datatable-striped"
+                                 paginator="true"
+                                 rows="5"
+                                 reflow="true"
+                                 emptyMessage="No hay productos disponibles."
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+
+                        <!-- Corrección: Usar la referencia completa para productoMessages -->
+                        <p:ajax event="rowSelect" update="formSeleccionProductos:cantidadInput formSeleccionProductos:addProductoBtn formSeleccionProductos:productoMessages" process="@this" />
+                        <p:ajax event="rowUnselect" update="formSeleccionProductos:cantidadInput formSeleccionProductos:addProductoBtn formSeleccionProductos:productoMessages" process="@this" />
+
+                        <p:column headerText="ID" width="10%">
+                            <h:outputText value="#{prod.idProducto}" />
+                        </p:column>
+                        <p:column headerText="Nombre" width="25%">
+                            <h:outputText value="#{prod.nombre}" />
+                        </p:column>
+                        <p:column headerText="Descripción" width="25%">
+                            <h:outputText value="#{prod.descripcion}" />
+                        </p:column>
+                        <p:column headerText="Precio Unitario" width="15%">
+                            <h:outputText value="#{prod.precioUnitario}">
+                                <f:convertNumber type="currency" currencySymbol="S/ " locale="es_PE" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Stock" width="10%">
+                            <h:outputText value="#{prod.stock}" />
+                        </p:column>
+                    </p:dataTable>
+
+                    <b:row style="margin-top: 15px;">
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="cantidadInput" value="#{ventaBean.cantidadProductoParaCarrito}"
+                                         label="Cantidad" placeholder="Ingrese cantidad"
+                                         required="true" requiredMessage="La cantidad es obligatoria."
+                                         type="number"
+                                         disabled="#{ventaBean.productoSeleccionadoParaCarrito == null}">
+                                <f:validateLongRange minimum="1" />
+                                <p:ajax event="blur" update="productoMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <h:panelGroup layout="block" styleClass="form-group" style="margin-top: 25px;">
+                                <p:commandButton id="addProductoBtn" value="Añadir al Carrito" icon="pi pi-cart-plus"
+                                                 action="#{ventaBean.agregarProductoAlCarrito}"
+                                                 update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formSeleccionProductos:productoMessages globalMessages formSeleccionProductos:productosDataTable"
+                                                 process="@form"
+                                                 disabled="#{ventaBean.productoSeleccionadoParaCarrito == null}" />
+                            </h:panelGroup>
+                        </b:column>
+                    </b:row>
+                </h:form>
+            </b:panel>
+
+            <!-- Sección 3: Carrito de Compras -->
+            <b:panel title="3. Carrito de Compras" look="success">
+                <h:form id="formCarrito">
+                    <p:messages id="carritoMessages" closable="true" />
+                    <p:dataTable id="carritoDataTable"
+                                 value="#{ventaBean.carrito}"
+                                 var="detalle"
+                                 styleClass="ui-datatable-striped carrito-table"
+                                 reflow="true"
+                                 emptyMessage="El carrito está vacío.">
+                        <p:column headerText="Producto" width="40%">
+                            <h:outputText value="#{productoDAO.obtenerProductoPorId(detalle.idProducto).nombre}" />
+                        </p:column>
+                        <p:column headerText="Cantidad" width="15%">
+                            <p:inputText value="#{detalle.cantidad}" style="width: 100%;"
+                                         converterMessage="La cantidad debe ser un número entero."
+                                         validatorMessage="La cantidad debe ser mayor a cero.">
+                                <f:validateLongRange minimum="1" />
+                                <p:ajax event="blur" listener="#{ventaBean.actualizarCantidadEnCarrito(detalle)}"
+                                        update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formCarrito:carritoMessages globalMessages" />
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Precio Unitario" width="20%">
+                            <h:outputText value="#{detalle.precioUnitario}">
+                                <f:convertNumber type="currency" currencySymbol="S/ " locale="es_PE" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Subtotal" width="20%">
+                            <h:outputText value="#{detalle.subtotal}">
+                                <f:convertNumber type="currency" currencySymbol="S/ " locale="es_PE" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Acciones" width="5%">
+                            <p:commandButton icon="pi pi-times" styleClass="ui-button-danger ui-button-flat"
+                                             action="#{ventaBean.eliminarProductoDelCarrito(detalle)}"
+                                             update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formCarrito:carritoMessages globalMessages" />
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:panelGroup id="totalVentaPanel" layout="block" styleClass="carrito-total">
+                        Total de la Venta: <h:outputText value="#{ventaBean.totalVenta}">
+                            <f:convertNumber type="currency" currencySymbol="S/ " locale="es_PE" />
+                        </h:outputText>
+                    </h:panelGroup>
+                </h:form>
+            </b:panel>
+
+            <!-- Sección 4: Resumen y Finalizar Venta -->
+            <b:panel title="4. Finalizar Venta" look="warning">
+                <h:form id="formResumenVenta">
+                    <p:messages id="finalizarVentaMessages" closable="true" />
+
+                    <h4 style="color: #333; margin-bottom: 10px;">Resumen:</h4>
+                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                        <h:outputText value="Cliente:" style="font-weight: bold;"/>
+                        <h:outputText value="#{ventaBean.clienteSeleccionado.nombre} #{ventaBean.clienteSeleccionado.apellido}"
+                                      rendered="#{ventaBean.clienteSeleccionado != null}" />
+                        <h:outputText value="No seleccionado" rendered="#{ventaBean.clienteSeleccionado == null}" />
+
+                        <h:outputText value="Vendedor:" style="font-weight: bold;"/>
+                        <h:outputText value="#{ventaBean.empleadoLogueado.nombre} #{ventaBean.empleadoLogueado.apellido}"
+                                      rendered="#{ventaBean.empleadoLogueado != null}" />
+                        <h:outputText value="No identificado" rendered="#{ventaBean.empleadoLogueado == null}" />
+
+                        <h:outputText value="Total de Ítems en Carrito:" style="font-weight: bold;"/>
+                        <h:outputText value="#{ventaBean.carrito.size()}" />
+
+                        <h:outputText value="Total a Pagar:" style="font-weight: bold; font-size: 1.2em; color: #d9534f;"/>
+                        <h:outputText value="#{ventaBean.totalVenta}" style="font-weight: bold; font-size: 1.2em; color: #d9534f;">
+                            <f:convertNumber type="currency" currencySymbol="S/ " locale="es_PE" />
+                        </h:outputText>
+                    </p:panelGrid>
+
+                    <b:row style="margin-top: 20px;">
+                        <b:column col-xs="12" class="text-right">
+                            <p:commandButton value="Limpiar Venta" icon="pi pi-refresh" styleClass="ui-button-secondary"
+                                             action="#{ventaBean.limpiarFormularioVenta}"
+                                             update="globalMessages formSeleccionCliente formSeleccionProductos formCarrito formResumenVenta"
+                                             process="@this" />
+                            <p:commandButton value="Finalizar Venta" icon="pi pi-check-square" styleClass="ui-button-success"
+                                             action="#{ventaBean.finalizarVenta}"
+                                             update="globalMessages formSeleccionCliente formSeleccionProductos formCarrito formResumenVenta"
+                                             process="@form" />
+                        </b:column>
+                    </b:row>
+                </h:form>
+            </b:panel>
+        </b:container>
+    </ui:define>
+</ui:composition>

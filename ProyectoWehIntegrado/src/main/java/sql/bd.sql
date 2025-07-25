@@ -25,7 +25,7 @@ CREATE TABLE Clientes (
     apellido VARCHAR(50) NOT NULL,
     correo VARCHAR(100),
     telefono VARCHAR(12),
-    dirección VARCHAR(150),
+    direccion VARCHAR(150),
     idSexo INT,
     FOREIGN KEY (idSexo) REFERENCES Sexos(idSexo),
     INDEX idx_dni (dni),
@@ -41,8 +41,8 @@ CREATE TABLE Usuarios (
     apellido VARCHAR(50) NOT NULL,
     correo VARCHAR(100),
     telefono VARCHAR(12),
-    dirección VARCHAR(150),
-    contraseña VARCHAR(100) NOT NULL,
+    direccion VARCHAR(150),
+    contrasena VARCHAR(100) NOT NULL,
     idSexo INT,
     idRol INT,
     FOREIGN KEY (idSexo) REFERENCES Sexos(idSexo),
@@ -125,7 +125,7 @@ INSERT INTO Categorias (descripcion) VALUES
 -- ===========================================================
 -- Tabla Clientes
 -- ===========================================================
-INSERT INTO Clientes (dni, nombre, apellido, correo, telefono, dirección, idSexo)
+INSERT INTO Clientes (dni, nombre, apellido, correo, telefono, direccion, idSexo)
 VALUES
 ('12345678', 'Luis', 'Torres', 'luis.torres@mail.com', '987654321', 'Av. Lima 123', 1),
 ('23456789', 'Ana', 'Ramirez', 'ana.ramirez@mail.com', '912345678', 'Jr. Cusco 456', 2),
@@ -141,7 +141,7 @@ VALUES
 -- ===========================================================
 -- Tabla Usuarios
 -- ===========================================================
-INSERT INTO Usuarios (dni, nombre, apellido, correo, telefono, dirección, contraseña, idSexo, idRol)
+INSERT INTO Usuarios (dni, nombre, apellido, correo, telefono, direccion, contrasena, idSexo, idRol)
 VALUES
 ('11111111', 'Admin', 'Root', 'admin@bodega.com', '900111111', 'Oficina Principal', 'admin123', 1, 1),
 ('22222222', 'Pedro', 'Vargas', 'pedro@bodega.com', '900222222', 'Sucursal Sur', 'pedro123', 1, 2),

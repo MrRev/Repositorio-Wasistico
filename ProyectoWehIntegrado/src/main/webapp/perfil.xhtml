@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/plantilla/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{loginBean.verificarSesion}"/>
+    </f:metadata>
+
+    <ui:define name="titulo">Perfil</ui:define>
+
+    <ui:define name="contenido">
+        <style>
+            /* Estilos personalizados para mejorar la apariencia */
+            .read-only-input {
+                background-color: #e9ecef; /* Color de fondo para indicar que es de solo lectura */
+                opacity: 1; /* Asegura que no se vea desvanecido */
+                cursor: default; /* Cambia el cursor para indicar que no es editable */
+                border: 1px solid #ced4da; /* Borde similar a los inputs */
+                border-radius: .25rem; /* Bordes redondeados */
+                padding: .375rem .75rem; /* Padding similar a los inputs */
+                height: calc(1.5em + .75rem + 2px); /* Altura similar a los inputs */
+                width: 100%; /* Ocupa todo el ancho disponible en su columna */
+            }
+            /* Ajustes para BootsFaces si es necesario */
+            .form-horizontal .control-label {
+                text-align: right; /* Alinea las etiquetas a la derecha */
+                padding-top: 7px; /* Alinea la etiqueta con el input */
+            }
+            .form-control-static {
+                /* Asegura que el texto estático se vea como un campo de solo lectura */
+                padding: .375rem .75rem;
+                height: calc(1.5em + .75rem + 2px);
+                width: 100%;
+                border: 1px solid #ced4da; /* Borde similar a los inputs */
+                border-radius: .25rem; /* Bordes redondeados */
+                background-color: #e9ecef; /* Fondo gris para indicar no editable */
+            }
+            /* Estilo para el contenedor del campo y el icono */
+            .field-with-icon {
+                display: flex;
+                align-items: center;
+            }
+            .field-with-icon .form-control,
+            .field-with-icon .form-control-static {
+                flex-grow: 1; /* Permite que el input/output ocupe el espacio restante */
+                margin-right: 5px; /* Espacio entre el campo y el icono */
+            }
+        </style>
+
+        <div class="container" style="margin-top: 20px;">
+            <!-- Sección del Icono de Perfil -->
+            <b:panel style="width: 160px; height: 160px; border-radius: 50%; overflow: hidden;
+                     margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
+                     background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
+                <b:iconAwesome name="user-circle" size="5x" style="color: #4f46e5;" />
+            </b:panel>
+
+            <b:panel look="primary" title="Mi Perfil" style="border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <f:facet name="heading">
+                    <h4 class="panel-title text-center" style="color: white;">
+                        <b:icon name="user" size="lg" style="margin-right: 10px;"/> Mi Perfil
+                    </h4>
+                    <p class="text-center" style="color: white; margin-bottom: 0;">Información detallada de tu cuenta</p>
+                </f:facet>
+
+                <h:form id="formPerfil" class="form-horizontal">
+                    <!-- ID de Usuario - Solo lectura -->
+                    <b:formGroup>
+                        <b:column col-md="4">
+                            <h:outputLabel value="ID de Usuario:" styleClass="control-label" />
+                        </b:column>
+                        <b:column col-md="8">
+                            <div class="field-with-icon">
+                                <h:outputText value="#{perfilEmpleadoBean.empleadoActual.idUsuario}" styleClass="form-control-static read-only-input" />
+                                <b:icon name="fingerprint" />
+                            </div>
+                        </b:column>
+                    </b:formGroup>
+
+                    <!-- DNI y Nombre - Solo lectura -->
+                    <b:row styleClass="mb-3">
+                        <b:column col-md="6">
+                            <b:formGroup>
+                                <b:column col-md="4">
+                                    <h:outputLabel value="DNI:" styleClass="control-label" />
+                                </b:column>
+                                <b:column col-md="8">
+                                    <div class="field-with-icon">
+                                        <b:inputText value="#{perfilEmpleadoBean.empleadoActual.dni}" readonly="true" styleClass="form-control read-only-input" />
+                                        <b:icon name="id-card" />
+                                    </div>
+                                </b:column>
+                            </b:formGroup>
+                        </b:column>
+                        <b:column col-md="6">
+                            <b:formGroup>
+                                <b:column col-md="4">
+                                    <h:outputLabel value="Nombre:" styleClass="control-label" />
+                                </b:column>
+                                <b:column col-md="8">
+                                    <div class="field-with-icon">
+                                        <b:inputText value="#{perfilEmpleadoBean.empleadoActual.nombre}" readonly="true" styleClass="form-control read-only-input" />
+                                        <b:icon name="user-alt" />
+                                    </div>
+                                </b:column>
+                            </b:formGroup>
+                        </b:column>
+                    </b:row>
+
+                    <!-- Apellido y Correo -->
+                    <b:row styleClass="mb-3">
+                        <b:column col-md="6">
+                            <b:formGroup>
+                                <b:column col-md="4">
+                                    <h:outputLabel value="Apellido:" styleClass="control-label" />
+                                </b:column>
+                                <b:column col-md="8">
+                                    <div class="field-with-icon">
+                                        <b:inputText value="#{perfilEmpleadoBean.empleadoActual.apellido}" readonly="true" styleClass="form-control read-only-input" />
+                                        <b:icon name="user-alt" />
+                                    </div>
+                                </b:column>
+                            </b:formGroup>
+                        </b:column>
+                        <b:column col-md="6">
+                            <b:formGroup>
+                                <b:column col-md="4">
+                                    <h:outputLabel for="correo" value="Correo:" styleClass="control-label" />
+                                </b:column>
+                                <b:column col-md="8">
+                                    <div class="field-with-icon">
+                                        <b:inputText id="correo" value="#{perfilEmpleadoBean.empleadoActual.correo}" required="true"
+                                                     requiredMessage="El correo es obligatorio" validatorMessage="Correo inválido"
+                                                     type="email" styleClass="form-control">
+                                            <f:validateRegex pattern="^[^@]+@[^@]+\\.[a-zA-Z]{2,}$" />
+                                        </b:inputText>
+                                        <b:icon name="envelope" />
+                                    </div>
+                                    <b:message for="correo" styleClass="text-danger small" />
+                                </b:column>
+                            </b:formGroup>
+                        </b:column>
+                    </b:row>
+
+                    <!-- Teléfono y Dirección -->
+                    <b:row styleClass="mb-3">
+                        <b:column col-md="6">
+                            <b:formGroup>
+                                <b:column col-md="4">
+                                    <h:outputLabel for="telefono" value="Teléfono:" styleClass="control-label" />
+                                </b:column>
+                                <b:column col-md="8">
+                                    <div class="field-with-icon">
+                                        <b:inputText id="telefono" value="#{perfilEmpleadoBean.empleadoActual.telefono}" required="true"
+                                                     requiredMessage="El teléfono es obligatorio" styleClass="form-control" />
+                                        <b:icon name="phone" />
+                                    </div>
+                                    <b:message for="telefono" styleClass="text-danger small" />
+                                </b:column>
+                            </b:formGroup>
+                        </b:column>
+                        <b:column col-md="6">
+                            <b:formGroup>
+                                <b:column col-md="4">
+                                    <h:outputLabel for="direccion" value="Dirección:" styleClass="control-label" />
+                                </b:column>
+                                <b:column col-md="8">
+                                    <div class="field-with-icon">
+                                        <b:inputText id="direccion" value="#{perfilEmpleadoBean.empleadoActual.direccion}" styleClass="form-control" />
+                                        <b:icon name="map-marker-alt" />
+                                    </div>
+                                    <b:message for="direccion" styleClass="text-danger small" />
+                                </b:column>
+                            </b:formGroup>
+                        </b:column>
+                    </b:row>
+
+                    <!-- Sexo y Rol - Solo lectura con descripciones -->
+                    <b:row styleClass="mb-3">
+                        <b:column col-md="6">
+                            <b:formGroup>
+                                <b:column col-md="4">
+                                    <h:outputLabel value="Sexo:" styleClass="control-label" />
+                                </b:column>
+                                <b:column col-md="8">
+                                    <div class="field-with-icon">
+                                        <h:outputText value="#{perfilEmpleadoBean.empleadoActual.sexoDescripcion}" styleClass="form-control-static read-only-input" />
+                                        <b:icon name="venus-mars" />
+                                    </div>
+                                </b:column>
+                            </b:formGroup>
+                        </b:column>
+                        <b:column col-md="6">
+                            <b:formGroup>
+                                <b:column col-md="4">
+                                    <h:outputLabel value="Rol:" styleClass="control-label" />
+                                </b:column>
+                                <b:column col-md="8">
+                                    <div class="field-with-icon">
+                                        <h:outputText value="#{perfilEmpleadoBean.empleadoActual.rolDescripcion}" styleClass="form-control-static read-only-input" />
+                                        <b:icon name="user-tag" />
+                                    </div>
+                                </b:column>
+                            </b:formGroup>
+                        </b:column>
+                    </b:row>
+
+                    <!-- Botones de acción -->
+                    <div class="text-center mt-4">
+                        <b:commandButton value="Guardar Cambios" action="#{perfilEmpleadoBean.actualizarPerfil()}"
+                                         look="success" icon="save" styleClass="btn-lg mr-2" />
+                        <b:commandButton value="Volver al Inicio" action="principal?faces-redirect=true"
+                                         look="info" icon="arrow-left" styleClass="btn-lg" />
+                    </div>
+
+                    <!-- Mensajes globales del formulario -->
+                    <b:messages styleClass="error-message mt-3" />
+                </h:form>
+            </b:panel>
+        </div>
+    </ui:define>
+</ui:composition>

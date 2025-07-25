@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/plantilla/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{loginBean.verificarSesion}"/>
+    </f:metadata>
+
+    <ui:define name="titulo">Gestión de Clientes</ui:define>
+
+    <ui:define name="contenido">
+        <h:head>
+            <style>
+                body, html {
+                    font-size: 16px;
+                    min-width: 320px;
+                }
+
+                /* Reducir el margin/padding excesivo del contenedor principal */
+                .b-container {
+                    padding-top: 10px !important;
+                    padding-bottom: 10px !important;
+                }
+
+                /* Estilos mejorados para el jumbotron */
+                .b-jumbotron {
+                    padding: 40px 25px !important; /* Aumentar el padding para un aspecto más llamativo */
+                    margin-bottom: 25px !important; /* Ajustar margen inferior */
+                    background-image: url('img/foto.jpg'); /* Imagen de fondo temática de bodega */
+                    background-size: cover;
+                    background-position: center;
+                    color: #ffffff; /* Color de texto blanco para contraste */
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra de texto para mejor legibilidad */
+                    border-radius: 10px; /* Bordes redondeados */
+                    text-align: center; /* Centrar el texto */
+                }
+
+                .ui-datatable, .ui-datatable * {
+                    font-size: 1rem !important;
+                    line-height: 1.5;
+                }
+                .ui-button, .b-form-group label, .b-form-group input, .b-form-group select {
+                    font-size: 1rem !important;
+                }
+                @media (max-width: 768px) {
+                    .b-jumbotron {
+                        padding: 30px 15px !important; /* Ajuste de padding para móviles */
+                    }
+
+                    .ui-datatable.ui-datatable-reflow .ui-datatable-data td .ui-column-title {
+                        font-weight: bold;
+                        margin-right: 0.5rem;
+                    }
+                    .ui-datatable.ui-datatable-reflow .ui-column-filter {
+                        display: none !important;
+                    }
+                    .action-buttons-group {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 5px;
+                    }
+                    .action-buttons-group .ui-button {
+                        flex-grow: 1;
+                        min-width: 80px;
+                    }
+                }
+                /* Estilos generales para el padding de los paneles */
+                .ui-fluid {
+                    padding: 15px;
+                }
+                /* Estilos para el contenedor del filtro global */
+                .global-filter-container {
+                    margin-bottom: 15px;
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    border-radius: 5px;
+                }
+                .global-filter-container .ui-inputtext {
+                    width: 100%;
+                }
+                /* Estilos para el filtro de columna */
+                .ui-column-filter {
+                    width: 100% !important;
+                    box-sizing: border-box;
+                    margin-top: 5px;
+                }
+                /* Estilos para el cuerpo del panel */
+                .panel-body {
+                    padding: 15px;
+                }
+                /* Estilos para los mensajes de PrimeFaces */
+                .ui-messages {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                }
+                /* Estilos para el pie de página de los diálogos - CORREGIDO */
+                .ui-dialog-footer {
+                    display: flex !important;
+                    justify-content: flex-end !important;
+                    align-items: center !important;
+                    padding: 15px !important;
+                    background-color: #f8f9fa !important;
+                    border-top: 1px solid #e9ecef !important;
+                    position: relative !important;
+                    z-index: 1000 !important;
+                    min-height: 60px !important;
+                    box-sizing: border-box !important;
+                }
+
+                /* Asegurar que los botones del footer se muestren correctamente */
+                .ui-dialog-footer .ui-button {
+                    margin-left: 10px !important;
+                    display: inline-block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                }
+
+                /* Estilos para el diálogo */
+                .ui-dialog {
+                    min-width: 600px !important;
+                }
+
+                .ui-dialog .ui-dialog-content {
+                    padding: 20px !important;
+                }
+
+                /* Estilos para el paginador de la tabla */
+                .ui-paginator {
+                    margin-top: 10px;
+                    text-align: center;
+                }
+                /* Estilos para filas impares de la tabla */
+                .ui-datatable-striped .ui-datatable-odd {
+                    background-color: #f2f2f2 !important;
+                }
+                /* Grupo de botones de acción en la tabla */
+                .action-buttons-group {
+                    display: flex;
+                    gap: 5px;
+                    flex-wrap: nowrap;
+                    justify-content: center;
+                    align-items: center;
+                }
+                /* Ajuste de ancho para los botones en la tabla para evitar truncamiento */
+                .action-buttons-group .ui-button {
+                    min-width: 65px;
+                    padding: 3px 8px;
+                    font-size: 0.9rem;
+                    white-space: nowrap;
+                    box-sizing: border-box;
+                }
+
+                /* Reducir espaciados generales */
+                .b-panel {
+                    margin-bottom: 15px !important;
+                }
+            </style>
+        </h:head>
+
+        <p:remoteCommand name="initPageCliente" action="#{clienteBean.cargarCatalogos}"
+                         update="formCliente:sexo formCliente:formMessages"
+                         process="@this"
+                         oncomplete="cargarClientes()" />
+        <p:remoteCommand name="cargarClientes" action="#{clienteBean.cargarClientes}"
+                         update="formTablaClientes:dataTableClientes formTablaClientes:tableMessages globalMessages"
+                         process="@this" />
+        <p:remoteCommand name="actualizarDialogoEditarCliente" action="#{clienteBean.cargarCatalogos}"
+                         update="formEditarCliente:editSexo formEditarCliente:formEditMessages"
+                         process="@this" />
+
+        <h:outputScript>
+            document.addEventListener('DOMContentLoaded', function() {
+                initPageCliente();
+            });
+        </h:outputScript>
+
+        <b:container>
+            <h2 style="color: #2C3E50; margin-bottom: 20px; font-weight: bold">Gestión de Clientes</h2>
+
+            <p:messages id="globalMessages" globalOnly="true" closable="true" />
+
+            <!-- Sección del formulario para agregar nuevo cliente -->
+            <b:panel title="Agregar Nuevo Cliente" look="primary">
+                <h:form id="formCliente">
+                    <p:messages id="formMessages" closable="true" />
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <!-- Contenedor para alinear DNI y botón usando b:row y b:column -->
+                            <b:formGroup>
+                                <b:row>
+                                    <b:column col-xs="8"> <!-- Ajusta el ancho según sea necesario -->
+                                        <b:inputText id="dni" value="#{clienteBean.nuevoCliente.dni}"
+                                                     label="DNI"
+                                                     placeholder="Ingrese el DNI"
+                                                     required="true" requiredMessage="El DNI es obligatorio.">
+                                            <!-- Este ajax es para la validación básica al salir del campo -->
+                                            <p:ajax event="blur" update="formMessages" />
+                                        </b:inputText>
+                                    </b:column>
+                                    <b:column col-xs="4"> <!-- Ajusta el ancho según sea necesario -->
+                                        <!-- Nuevo botón para validar DNI -->
+                                        <p:commandButton value="Validar DNI" icon="pi pi-search" styleClass="ui-button-info"
+                                                         action="#{clienteBean.consultarDniParaCliente}"
+                                                         update="nombre apellido formMessages globalMessages"
+                                                         process="dni @this"
+                                                         onstart="console.log('Iniciando consulta de DNI para agregar cliente...');"
+                                                         oncomplete="console.log('Consulta de DNI para agregar cliente completada.');" />
+                                    </b:column>
+                                </b:row>
+                            </b:formGroup>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="nombre" value="#{clienteBean.nuevoCliente.nombre}"
+                                         label="Nombre" placeholder="Ingrese el nombre" required="true"
+                                         requiredMessage="El nombre es obligatorio."
+                                         disabled="#{clienteBean.datosCargadosDesdeApi}"> <!-- Campo bloqueado -->
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="apellido" value="#{clienteBean.nuevoCliente.apellido}"
+                                         label="Apellido" placeholder="Ingrese el apellido" required="true"
+                                         requiredMessage="El apellido es obligatorio."
+                                         disabled="#{clienteBean.datosCargadosDesdeApi}"> <!-- Campo bloqueado -->
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="correo" value="#{clienteBean.nuevoCliente.correo}"
+                                         label="Correo Electrónico" placeholder="Ingrese el correo"
+                                         type="email">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="telefono" value="#{clienteBean.nuevoCliente.telefono}"
+                                         label="Teléfono" placeholder="Ingrese el teléfono">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="direccion" value="#{clienteBean.nuevoCliente.direccion}"
+                                         label="Dirección" placeholder="Ingrese la dirección">
+                                <p:ajax event="blur" update="formMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:selectOneMenu id="sexo" value="#{clienteBean.nuevoCliente.idSexo}"
+                                             label="Sexo" required="true" requiredMessage="El sexo es obligatorio.">
+                                <f:selectItems value="#{clienteBean.sexosItems}" var="s" itemLabel="#{s.label}" itemValue="#{s.value}" />
+                                <p:ajax event="change" update="sexo formMessages" />
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" class="text-right">
+                            <b:commandButton value="Guardar Cliente" look="success" icon="save"
+                                             action="#{clienteBean.guardarCliente}"
+                                             update="globalMessages formCliente formTablaClientes:dataTableClientes formTablaClientes:tableMessages" />
+                        </b:column>
+                    </b:row>
+                </h:form>
+            </b:panel>
+
+            <!-- Tabla de clientes -->
+            <h:form id="formTablaClientes" prependId="false">
+                <b:panel title="Lista de Clientes" look="info">
+                    <p:messages id="tableMessages" closable="true" />
+                    <div class="global-filter-container">
+                        <p:inputText id="globalFilter" value="#{clienteBean.filtroGlobal}" placeholder="Buscar en tabla...">
+                            <p:ajax event="keyup" listener="#{clienteBean.cargarClientes}"
+                                    update="dataTableClientes globalMessages tableMessages" delay="300" process="@this" />
+                            <p:ajax event="keydown" onstart="if (event.keyCode === 13) { event.preventDefault(); return false; }" process="@this" />
+                        </p:inputText>
+                    </div>
+
+                    <p:dataTable id="dataTableClientes"
+                                 value="#{clienteBean.listaClientes}"
+                                 var="cliente"
+                                 styleClass="ui-datatable-striped"
+                                 paginator="true"
+                                 rows="10"
+                                 reflow="true"
+                                 widgetVar="clientesTableWidget"
+                                 emptyMessage="No hay clientes registrados."
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50">
+                        <p:column headerText="ID" width="10%">
+                            <h:outputText value="#{cliente.idCliente}" />
+                        </p:column>
+                        <p:column headerText="DNI" width="10%">
+                            <h:outputText value="#{cliente.dni}" />
+                        </p:column>
+                        <p:column headerText="Nombre Completo" width="20%">
+                            <h:outputText value="#{cliente.nombre} #{cliente.apellido}" />
+                        </p:column>
+                        <p:column headerText="Correo" width="20%">
+                            <h:outputText value="#{cliente.correo}" />
+                        </p:column>
+                        <p:column headerText="Teléfono" width="15%">
+                            <h:outputText value="#{cliente.telefono}" />
+                        </p:column>
+                        <p:column headerText="Sexo" width="15%">
+                            <!-- Asumiendo que has añadido un getter para sexoDescripcion en Cliente si lo mapeas en ClienteDAO -->
+                            <h:outputText value="#{cliente.idSexo}" />
+                        </p:column>
+                        <p:column headerText="Acciones" width="10%">
+                            <p:commandButton value="Editar" icon="pi pi-pencil" styleClass="ui-button-warning ui-button-flat"
+                                             action="#{clienteBean.editarCliente(cliente)}"
+                                             oncomplete="PF('editarClienteDialog').show(); setTimeout(function() { actualizarDialogoEditarCliente(); }, 50);"
+                                             update="formEditarCliente:editDni formEditarCliente:editNombre formEditarCliente:editApellido formEditarCliente:editCorreo formEditarCliente:editTelefono formEditarCliente:editDireccion formEditarCliente:editSexo formEditarCliente:formEditMessages globalMessages tableMessages" />
+                            <p:commandButton id="deleteButtonCliente" value="Eliminar" icon="pi pi-trash" styleClass="ui-button-danger ui-button-flat"
+                                             action="#{clienteBean.prepararEliminacion(cliente)}"
+                                             oncomplete="PF('confirmacionEliminarClienteDialog').show()"
+                                             update=":formTablaClientes:confirmacionEliminarClienteDialogContent globalMessages tableMessages" />
+                        </p:column>
+                    </p:dataTable>
+                </b:panel>
+
+                <!-- Modal de confirmación de eliminación de cliente -->
+                <p:dialog id="confirmacionEliminarClienteDialog" header="Confirmar Eliminación" widgetVar="confirmacionEliminarClienteDialog"
+                          modal="true" resizable="false" draggable="false" closable="true" showEffect="fade" hideEffect="fade">
+                    <h:panelGroup id="confirmacionEliminarClienteDialogContent" layout="block" styleClass="ui-fluid">
+                        ¿Está seguro de que desea eliminar al cliente <strong>#{clienteBean.clienteAEliminar.nombre} #{clienteBean.clienteAEliminar.apellido}</strong>?
+                        Esta acción no se puede deshacer.
+                    </h:panelGroup>
+                    <f:facet name="footer">
+                        <div class="ui-dialog-footer">
+                            <p:commandButton value="Cancelar" type="button" onclick="PF('confirmacionEliminarClienteDialog').hide();"
+                                             icon="pi pi-times" styleClass="ui-button-secondary" />
+                            <p:commandButton value="Sí, Eliminar" icon="pi pi-trash" action="#{clienteBean.eliminarCliente}"
+                                             oncomplete="PF('confirmacionEliminarClienteDialog').hide();"
+                                             update=":formTablaClientes:dataTableClientes globalMessages tableMessages"
+                                             styleClass="ui-button-danger" />
+                        </div>
+                    </f:facet>
+                </p:dialog>
+            </h:form>
+
+            <!-- Modal de edición de cliente -->
+            <p:dialog id="editarClienteDialog" header="Editar Cliente" widgetVar="editarClienteDialog"
+                      modal="true" resizable="false" draggable="false" closable="true" showEffect="fade" hideEffect="fade">
+                <h:form id="formEditarCliente">
+                    <p:messages id="formEditMessages" closable="true" />
+                    <h:inputHidden value="#{clienteBean.nuevoCliente.idCliente}" />
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <!-- Contenedor para alinear DNI y botón en el diálogo de edición usando b:row y b:column -->
+                            <b:formGroup>
+                                <b:row>
+                                    <b:column col-xs="8"> <!-- Ajusta el ancho según sea necesario -->
+                                        <b:inputText id="editDni" value="#{clienteBean.nuevoCliente.dni}"
+                                                     label="DNI"
+                                                     placeholder="Ingrese el DNI"
+                                                     required="true" requiredMessage="El DNI es obligatorio.">
+                                            <p:ajax event="blur" update="formEditMessages" />
+                                        </b:inputText>
+                                    </b:column>
+                                    <b:column col-xs="4"> <!-- Ajusta el ancho según sea necesario -->
+                                        <!-- Nuevo botón para validar DNI en el diálogo de edición -->
+                                        <p:commandButton value="Validar DNI" icon="pi pi-search" styleClass="ui-button-info"
+                                                         action="#{clienteBean.consultarDniParaCliente}"
+                                                         update="editNombre editApellido formEditMessages globalMessages"
+                                                         process="editDni @this"
+                                                         onstart="console.log('Iniciando consulta de DNI para editar cliente...');"
+                                                         oncomplete="console.log('Consulta de DNI para editar cliente completada.');" />
+                                    </b:column>
+                                </b:row>
+                            </b:formGroup>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editNombre" value="#{clienteBean.nuevoCliente.nombre}"
+                                         label="Nombre" placeholder="Ingrese el nombre" required="true"
+                                         requiredMessage="El nombre es obligatorio."
+                                         disabled="#{clienteBean.datosCargadosDesdeApi}"> <!-- Campo bloqueado -->
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editApellido" value="#{clienteBean.nuevoCliente.apellido}"
+                                         label="Apellido" placeholder="Ingrese el apellido" required="true"
+                                         requiredMessage="El apellido es obligatorio."
+                                         disabled="#{clienteBean.datosCargadosDesdeApi}"> <!-- Campo bloqueado -->
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editCorreo" value="#{clienteBean.nuevoCliente.correo}"
+                                         label="Correo Electrónico" placeholder="Ingrese el correo"
+                                         type="email">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editTelefono" value="#{clienteBean.nuevoCliente.telefono}"
+                                         label="Teléfono" placeholder="Ingrese el teléfono">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:inputText id="editDireccion" value="#{clienteBean.nuevoCliente.direccion}"
+                                         label="Dirección" placeholder="Ingrese la dirección">
+                                <p:ajax event="blur" update="formEditMessages" />
+                            </b:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-xs="12" col-sm="6">
+                            <b:selectOneMenu id="editSexo" value="#{clienteBean.nuevoCliente.idSexo}"
+                                             label="Sexo" required="true" requiredMessage="El sexo es obligatorio.">
+                                <f:selectItems value="#{clienteBean.sexosItems}" var="s" itemLabel="#{s.label}" itemValue="#{s.value}" />
+                                <p:ajax event="change" update="editSexo formEditMessages" />
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                </h:form>
+                <f:facet name="footer">
+                    <div class="ui-dialog-footer">
+                        <p:commandButton value="Cancelar" type="button" onclick="PF('editarClienteDialog').hide();"
+                                         icon="pi pi-times" styleClass="ui-button-secondary" />
+                        <p:commandButton value="Guardar Cambios" icon="pi pi-save"
+                                         action="#{clienteBean.guardarCliente}"
+                                         oncomplete="PF('editarClienteDialog').hide();"
+                                         update=":formTablaClientes:dataTableClientes globalMessages :formEditarCliente:formEditMessages tableMessages"
+                                         styleClass="ui-button-success" />
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </b:container>
+    </ui:define>
+</ui:composition>

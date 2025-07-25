@@ -1,6 +1,7 @@
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\dao\CategoriaDAO.java
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\beans\ClienteBean.java
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\beans\CategoriaBean.java
+C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\beans\PerfilEmpleadoBean.java
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\beans\IdiomaBean.java
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\modelo\Cliente.java
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\dao\EmpleadoDAO.java
@@ -26,3 +27,4 @@ C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehInteg
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\beans\ProductoBean.java
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\dao\DashboardDAO.java
 C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\dao\CatalogoDAO.java
+C:\Users\Muaro\Documents\NetBeansProjects\Repositorio-Wasistico\ProyectoWehIntegrado\src\main\java\dao\DetalleVentaDAO.java

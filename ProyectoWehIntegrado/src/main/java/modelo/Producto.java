@@ -1,34 +1,44 @@
 package modelo;
 
-/**
- *
- * @author Muaro
- */
-public class Producto {
-    
+import java.io.Serializable;
+import java.math.BigDecimal; // Importar BigDecimal
+
+public class Producto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private int idProducto;
     private int idCategoria;
     private String nombre;
     private String descripcion;
-    private double precioUnitario;
-    private int stock;
-    
-    // NUEVO
-    private String categoriaNombre;  // mostrará la descripción de la categoría
+    private BigDecimal precioUnitario; // CAMBIO AQUÍ: BigDecimal
+    private int stockDisponible;
+    private String categoriaNombre; // Para mostrar la descripción de la categoría
 
-    public Producto() {}
+    // Constructores
+    public Producto() {
+    }
 
-    public Producto(int idProducto, int idCategoria, String nombre, String descripcion, double precioUnitario, int stock) {
+    public Producto(int idProducto, int idCategoria, String nombre, String descripcion, BigDecimal precioUnitario, int stockDisponible) {
         this.idProducto = idProducto;
         this.idCategoria = idCategoria;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precioUnitario = precioUnitario;
-        this.stock = stock;
+        this.stockDisponible = stockDisponible;
     }
 
-    // GETTERS / SETTERS
+    public Producto(int idProducto, int idCategoria, String nombre, String descripcion, BigDecimal precioUnitario, int stockDisponible, String categoriaNombre) {
+        this.idProducto = idProducto;
+        this.idCategoria = idCategoria;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precioUnitario = precioUnitario;
+        this.stockDisponible = stockDisponible;
+        this.categoriaNombre = categoriaNombre;
+    }
 
+    // Getters y Setters
     public int getIdProducto() {
         return idProducto;
     }
@@ -61,28 +71,41 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
-    public double getPrecioUnitario() {
+    // CAMBIO CLAVE: Getter y Setter para BigDecimal
+    public BigDecimal getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(double precioUnitario) {
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 
     public int getStock() {
-        return stock;
+        return stockDisponible;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setStock(int stockDisponible) {
+        this.stockDisponible = stockDisponible;
     }
 
-    // NUEVO
     public String getCategoriaNombre() {
         return categoriaNombre;
     }
 
     public void setCategoriaNombre(String categoriaNombre) {
         this.categoriaNombre = categoriaNombre;
+    }
+
+    @Override
+    public String toString() {
+        return "Producto{"
+                + "idProducto=" + idProducto
+                + ", idCategoria=" + idCategoria
+                + ", nombre='" + nombre + '\''
+                + ", descripcion='" + descripcion + '\''
+                + ", precioUnitario=" + precioUnitario
+                + ", stockDisponible=" + stockDisponible
+                + ", categoriaNombre='" + categoriaNombre + '\''
+                + '}';
     }
 }

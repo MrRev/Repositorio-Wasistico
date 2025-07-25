@@ -17,10 +17,11 @@ public class Empleado implements Serializable {
     private String correo;
     private String telefono;
     private String direccion;
-    private String contrasena; // NOTA IMPORTANTE: En una aplicación real, esto DEBERÍA ser un hash (ej. BCrypt) por seguridad.
+    private String contrasena;
     private int idSexo;
+    private String sexoDescripcion; // Nuevo campo para la descripción del sexo
     private int idRol;
-    private String rolDescripcion; // Campo para almacenar la descripción del rol (obtenido de la tabla Roles)
+    private String rolDescripcion;
 
     /**
      * Constructor vacío necesario para JSF/CDI.
@@ -84,8 +85,9 @@ public class Empleado implements Serializable {
     }
 
     /**
-     * Constructor completo con descripción del rol incluida. Útil para mapear
-     * resultados de consultas que hacen JOIN con la tabla de Roles.
+     * Constructor completo con descripción del rol y sexo incluidas. Útil para
+     * mapear resultados de consultas que hacen JOIN con las tablas de Roles y
+     * Sexos.
      *
      * @param idUsuario El ID único del empleado.
      * @param dni El DNI del empleado.
@@ -97,14 +99,16 @@ public class Empleado implements Serializable {
      * @param contrasena La contraseña del empleado (considerar hashing en
      * producción).
      * @param idSexo El ID del sexo del empleado.
+     * @param sexoDescripcion La descripción textual del sexo del empleado.
      * @param idRol El ID del rol del empleado.
      * @param rolDescripcion La descripción textual del rol del empleado.
      */
     public Empleado(int idUsuario, String dni, String nombre,
             String apellido, String correo, String telefono,
             String direccion, String contrasena,
-            int idSexo, int idRol, String rolDescripcion) {
+            int idSexo, String sexoDescripcion, int idRol, String rolDescripcion) {
         this(idUsuario, dni, nombre, apellido, correo, telefono, direccion, contrasena, idSexo, idRol);
+        this.sexoDescripcion = sexoDescripcion;
         this.rolDescripcion = rolDescripcion;
     }
 
@@ -125,6 +129,7 @@ public class Empleado implements Serializable {
         this.direccion = src.direccion;
         this.contrasena = src.contrasena;
         this.idSexo = src.idSexo;
+        this.sexoDescripcion = src.sexoDescripcion; // Copia el nuevo campo
         this.idRol = src.idRol;
         this.rolDescripcion = src.rolDescripcion;
     }
@@ -200,6 +205,14 @@ public class Empleado implements Serializable {
 
     public void setIdSexo(int idSexo) {
         this.idSexo = idSexo;
+    }
+
+    public String getSexoDescripcion() {
+        return sexoDescripcion;
+    }
+
+    public void setSexoDescripcion(String sexoDescripcion) {
+        this.sexoDescripcion = sexoDescripcion;
     }
 
     public int getIdRol() {

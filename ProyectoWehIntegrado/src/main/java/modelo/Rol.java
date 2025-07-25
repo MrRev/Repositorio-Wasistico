@@ -3,7 +3,8 @@ package modelo;
 import java.io.Serializable;
 
 /**
- * Clase de modelo para representar un Rol de usuario.
+ * Modelo que representa un Rol de usuario en la base de datos.
+ * @author Muaro
  */
 public class Rol implements Serializable {
 
@@ -39,6 +40,10 @@ public class Rol implements Serializable {
 
     @Override
     public String toString() {
-        return descripcion;
+        return "Rol{" +
+               "idRol=" + idRol +
+               ", descripcion='" + descripcion + '\'' +
+               '}';
     }
 }
+
