@@ -41,6 +41,9 @@ public class ProductoBean implements Serializable {
     }
 
     public void listarProductos() {
+        // Este método ahora puede usar el filtro si está presente, o listar todos si no.
+        // Sin embargo, para la tabla principal, mantenemos listarTodos por claridad.
+        // El método buscarProductos se encargará de aplicar el filtro.
         listaProductos = productoDAO.listarProductos();
     }
 
@@ -51,8 +54,21 @@ public class ProductoBean implements Serializable {
         }
     }
 
+    /**
+     * Busca productos en la base de datos utilizando el filtro global. Este
+     * método se invoca desde la UI cuando se aplica el filtro.
+     */
     public void buscarProductos() {
-        listaProductos = productoDAO.buscarPorNombre(filtro);
+        // Llama al método obtenerProductosFiltrados del DAO, que maneja si el filtro está vacío o no.
+        listaProductos = productoDAO.obtenerProductosFiltrados(filtro);
+    }
+
+    /**
+     * Limpia el filtro de búsqueda y recarga la lista completa de productos.
+     */
+    public void limpiarFiltro() {
+        this.filtro = null; // O this.filtro = "";
+        listarProductos(); // Recarga la lista completa sin filtro
     }
 
     public void prepararEliminar(Producto producto) {

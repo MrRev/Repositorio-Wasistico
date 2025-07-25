@@ -1,7 +1,6 @@
 package beans;
 
 import dao.VentaDAO;
-import dao.DetalleVentaDAO; // Aunque registrarVentaCompleta lo maneja, podría ser útil para otras operaciones
 import dao.ProductoDAO;
 import dao.ClienteDAO;
 import modelo.Venta;
@@ -52,13 +51,13 @@ public class VentaBean implements Serializable {
 
     // Propiedades para la selección de cliente
     private Cliente clienteSeleccionado;
-    private String filtroClienteDni;
+    private String filtroClienteDni; // Usado para el filtro de clientes en la UI
     private List<Cliente> clientesDisponibles;
 
     // Propiedades para la selección de producto y adición al carrito
     private Producto productoSeleccionadoParaCarrito;
     private int cantidadProductoParaCarrito;
-    private String filtroProductoNombre;
+    private String filtroProductoNombre; // Usado para el filtro de productos en la UI
     private List<Producto> productosDisponibles;
 
     // Empleado logueado que realiza la venta
@@ -68,8 +67,9 @@ public class VentaBean implements Serializable {
     public void init() {
         LOGGER.log(Level.INFO, "Inicializando VentaBean...");
         limpiarFormularioVenta(); // Inicializa una nueva venta y carrito
-        cargarClientesDisponibles(); // Carga la lista inicial de clientes
-        cargarProductosDisponibles(); // Carga la lista inicial de productos
+        // Las siguientes llamadas se realizan dentro de limpiarFormularioVenta()
+        // cargarClientesDisponibles(); 
+        // cargarProductosDisponibles(); 
         empleadoLogueado = obtenerEmpleadoLogueado(); // Obtiene el empleado de la sesión
         if (empleadoLogueado == null) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -82,11 +82,13 @@ public class VentaBean implements Serializable {
 
     /**
      * Carga la lista de clientes disponibles, aplicando un filtro si existe.
+     * Utiliza el filtroClienteDni para buscar por DNI o nombre/apellido.
      */
     public void cargarClientesDisponibles() {
         try {
             if (filtroClienteDni != null && !filtroClienteDni.trim().isEmpty()) {
-                clientesDisponibles = clienteDAO.obtenerClientesFiltrados(filtroClienteDni);
+                // Asume que clienteDAO.obtenerClientesFiltrados busca por DNI o nombre/apellido
+                clientesDisponibles = clienteDAO.obtenerClientesFiltrados(filtroClienteDni.trim());
                 LOGGER.log(Level.INFO, "Clientes filtrados por DNI/nombre '{0}' cargados. Cantidad: {1}", new Object[]{filtroClienteDni, clientesDisponibles.size()});
             } else {
                 clientesDisponibles = clienteDAO.obtenerTodosClientes();
@@ -102,12 +104,14 @@ public class VentaBean implements Serializable {
 
     /**
      * Carga la lista de productos disponibles, aplicando un filtro si existe.
+     * Utiliza el filtroProductoNombre para buscar por nombre o descripción.
      */
     public void cargarProductosDisponibles() {
         try {
             if (filtroProductoNombre != null && !filtroProductoNombre.trim().isEmpty()) {
-                productosDisponibles = productoDAO.buscarPorNombre(filtroProductoNombre);
-                LOGGER.log(Level.INFO, "Productos filtrados por nombre '{0}' cargados. Cantidad: {1}", new Object[]{filtroProductoNombre, productosDisponibles.size()});
+                // Utiliza el método obtenerProductosFiltrados del ProductoDAO
+                productosDisponibles = productoDAO.obtenerProductosFiltrados(filtroProductoNombre.trim());
+                LOGGER.log(Level.INFO, "Productos filtrados por nombre/descripción '{0}' cargados. Cantidad: {1}", new Object[]{filtroProductoNombre, productosDisponibles.size()});
             } else {
                 productosDisponibles = productoDAO.listarProductos();
                 LOGGER.log(Level.INFO, "Todos los productos cargados. Cantidad: {0}", productosDisponibles.size());
@@ -154,11 +158,17 @@ public class VentaBean implements Serializable {
             LOGGER.log(Level.WARNING, "Intento de agregar producto con cantidad inválida: {0}", cantidadProductoParaCarrito);
             return;
         }
-        if (cantidadProductoParaCarrito > productoSeleccionadoParaCarrito.getStock()) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Stock", "No hay suficiente stock disponible para " + productoSeleccionadoParaCarrito.getNombre() + ". Stock actual: " + productoSeleccionadoParaCarrito.getStock()));
-            LOGGER.log(Level.WARNING, "Stock insuficiente para producto {0}. Solicitado: {1}, Disponible: {2}", new Object[]{productoSeleccionadoParaCarrito.getNombre(), cantidadProductoParaCarrito, productoSeleccionadoParaCarrito.getStock()});
+
+        // Recuperar el producto más reciente de la base de datos para verificar el stock
+        Producto productoActualizado = productoDAO.obtenerProductoPorId(productoSeleccionadoParaCarrito.getIdProducto());
+        if (productoActualizado == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El producto seleccionado ya no está disponible."));
+            LOGGER.log(Level.SEVERE, "Producto con ID {0} no encontrado al intentar agregar al carrito.", productoSeleccionadoParaCarrito.getIdProducto());
             return;
         }
+        
+        // Actualizar el objeto productoSeleccionadoParaCarrito con el stock más reciente
+        productoSeleccionadoParaCarrito.setStock(productoActualizado.getStock());
 
         // Verificar si el producto ya está en el carrito
         DetalleVenta detalleExistente = null;
@@ -169,17 +179,20 @@ public class VentaBean implements Serializable {
             }
         }
 
+        int cantidadEnCarritoActual = (detalleExistente != null) ? detalleExistente.getCantidad() : 0;
+        int nuevaCantidadTotal = cantidadEnCarritoActual + cantidadProductoParaCarrito;
+
+        if (nuevaCantidadTotal > productoSeleccionadoParaCarrito.getStock()) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Stock", "La cantidad total para " + productoSeleccionadoParaCarrito.getNombre() + " (" + nuevaCantidadTotal + ") excede el stock disponible (" + productoSeleccionadoParaCarrito.getStock() + ")."));
+            LOGGER.log(Level.WARNING, "Stock insuficiente para producto {0}. Solicitado: {1}, Disponible: {2}", new Object[]{productoSeleccionadoParaCarrito.getNombre(), nuevaCantidadTotal, productoSeleccionadoParaCarrito.getStock()});
+            return;
+        }
+
         if (detalleExistente != null) {
             // Si el producto ya está, actualiza la cantidad
-            int nuevaCantidad = detalleExistente.getCantidad() + cantidadProductoParaCarrito;
-            if (nuevaCantidad > productoSeleccionadoParaCarrito.getStock()) {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Stock", "La cantidad total para " + productoSeleccionadoParaCarrito.getNombre() + " excede el stock disponible."));
-                LOGGER.log(Level.WARNING, "La cantidad acumulada para el producto {0} excede el stock. Nueva cantidad: {1}, Stock: {2}", new Object[]{productoSeleccionadoParaCarrito.getNombre(), nuevaCantidad, productoSeleccionadoParaCarrito.getStock()});
-                return;
-            }
-            detalleExistente.setCantidad(nuevaCantidad);
-            detalleExistente.setSubtotal(productoSeleccionadoParaCarrito.getPrecioUnitario().multiply(new BigDecimal(nuevaCantidad)));
-            LOGGER.log(Level.INFO, "Cantidad de producto {0} actualizada en el carrito a {1}.", new Object[]{productoSeleccionadoParaCarrito.getNombre(), nuevaCantidad});
+            detalleExistente.setCantidad(nuevaCantidadTotal);
+            detalleExistente.setSubtotal(productoSeleccionadoParaCarrito.getPrecioUnitario().multiply(new BigDecimal(nuevaCantidadTotal)));
+            LOGGER.log(Level.INFO, "Cantidad de producto {0} actualizada en el carrito a {1}.", new Object[]{productoSeleccionadoParaCarrito.getNombre(), nuevaCantidadTotal});
         } else {
             // Si no está, añade un nuevo detalle
             DetalleVenta nuevoDetalle = new DetalleVenta();
@@ -187,8 +200,6 @@ public class VentaBean implements Serializable {
             nuevoDetalle.setCantidad(cantidadProductoParaCarrito);
             nuevoDetalle.setPrecioUnitario(productoSeleccionadoParaCarrito.getPrecioUnitario()); // Usar el precio unitario del producto
             nuevoDetalle.setSubtotal(productoSeleccionadoParaCarrito.getPrecioUnitario().multiply(new BigDecimal(cantidadProductoParaCarrito)));
-            // Opcional: Si DetalleVenta tuviera un campo para el objeto Producto, lo setearíamos aquí.
-            // nuevoDetalle.setProducto(productoSeleccionadoParaCarrito);
             carrito.add(nuevoDetalle);
             LOGGER.log(Level.INFO, "Producto {0} añadido al carrito con cantidad {1}.", new Object[]{productoSeleccionadoParaCarrito.getNombre(), cantidadProductoParaCarrito});
         }
@@ -199,8 +210,8 @@ public class VentaBean implements Serializable {
         // Limpiar campos de selección de producto para el siguiente
         productoSeleccionadoParaCarrito = null;
         cantidadProductoParaCarrito = 0;
-        filtroProductoNombre = null; // Limpiar filtro para recargar productos si es necesario
-        cargarProductosDisponibles(); // Recargar productos para reflejar stock si se desea (aunque el stock real se actualiza en DB al finalizar venta)
+        // No limpiar filtroProductoNombre aquí para mantener el filtro activo si el usuario lo desea
+        // cargarProductosDisponibles(); // Recargar productos para reflejar stock si se desea (aunque el stock real se actualiza en DB al finalizar venta)
     }
 
     /**
@@ -242,7 +253,7 @@ public class VentaBean implements Serializable {
             return;
         }
 
-        // Recuperar el producto original para verificar el stock
+        // Recuperar el producto original de la base de datos para verificar el stock
         Producto productoOriginal = productoDAO.obtenerProductoPorId(detalle.getIdProducto());
         if (productoOriginal == null) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Producto no encontrado para actualizar cantidad."));
@@ -251,10 +262,10 @@ public class VentaBean implements Serializable {
         }
 
         if (detalle.getCantidad() > productoOriginal.getStock()) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Stock", "La cantidad para " + productoOriginal.getNombre() + " excede el stock disponible. Stock actual: " + productoOriginal.getStock()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Stock", "La cantidad para " + productoOriginal.getNombre() + " (" + detalle.getCantidad() + ") excede el stock disponible (" + productoOriginal.getStock() + ")."));
             LOGGER.log(Level.WARNING, "Stock insuficiente al actualizar cantidad para producto {0}. Solicitado: {1}, Disponible: {2}", new Object[]{productoOriginal.getNombre(), detalle.getCantidad(), productoOriginal.getStock()});
-            // Revertir la cantidad a la última válida o al stock máximo
-            // detalle.setCantidad(productoOriginal.getStock()); // Esto podría ser una opción
+            // Revertir la cantidad a la última válida o al stock máximo si se prefiere
+            // detalle.setCantidad(productoOriginal.getStock());
             return;
         }
 
@@ -310,11 +321,17 @@ public class VentaBean implements Serializable {
         ventaActual.setTotal(totalVenta);
 
         try {
+            // Este método (registrarVentaCompleta) en VentaDAO DEBE manejar la transacción
+            // de guardar la venta, sus detalles y la reducción del stock de cada producto.
+            // Es CRÍTICO que VentaDAO.registrarVentaCompleta() llame a productoDAO.reducirStock()
+            // por cada item del carrito y que todo esto esté dentro de una transacción de BD.
             boolean exito = ventaDAO.registrarVentaCompleta(ventaActual, carrito);
             if (exito) {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Venta registrada exitosamente con ID: " + ventaActual.getIdVenta()));
                 LOGGER.log(Level.INFO, "Venta {0} registrada exitosamente.", ventaActual.getIdVenta());
                 limpiarFormularioVenta(); // Limpiar el formulario para una nueva venta
+                // Recargar los productos disponibles para reflejar la reducción de stock en la tabla de selección
+                cargarProductosDisponibles(); 
                 return "ventas?faces-redirect=true"; // O redirigir a una página de confirmación/listado
             } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar la venta. Verifique los datos e intente de nuevo."));

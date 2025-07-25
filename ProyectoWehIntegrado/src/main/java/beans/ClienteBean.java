@@ -9,7 +9,7 @@ import util.DniApiService; // Importa el servicio para consultar la API de DNI
 import jakarta.annotation.PostConstruct; // Para el método que se ejecuta al iniciar el bean
 import jakarta.faces.application.FacesMessage; // Para mostrar mensajes al usuario en la UI
 import jakarta.faces.context.FacesContext; // Para acceder al contexto de JSF (mensajes, etc.)
-import jakarta.faces.model.SelectItem; // Para crear opciones para los selectOneMenu
+import jakarta.faces.model.SelectItem; // Para crear opciones para el selectOneMenu
 import jakarta.faces.view.ViewScoped; // Define el ámbito del bean: vive mientras el usuario esté en la misma vista
 import jakarta.inject.Inject; // Para inyectar otras clases (dependencias)
 import jakarta.inject.Named; // Para que JSF reconozca este bean por su nombre (clienteBean)
@@ -86,13 +86,16 @@ public class ClienteBean implements Serializable {
 
     /**
      * Carga la lista de clientes desde el ClienteDAO. Aplica un filtro global
-     * si está definido. Muestra mensajes de error si la carga falla.
+     * si está definido. Muestra mensajes de error si la carga falla. Esta es la
+     * lógica central para la búsqueda de clientes.
      */
     public void cargarClientes() {
         try {
             if (filtroGlobal != null && !filtroGlobal.trim().isEmpty()) {
-                // Si hay un filtro, obtiene los clientes filtrados
-                listaClientes = clienteDAO.obtenerClientesFiltrados(filtroGlobal);
+                // Si hay un filtro, obtiene los clientes filtrados por DNI o nombre/apellido.
+                // Es crucial que clienteDAO.obtenerClientesFiltrados implemente la lógica de búsqueda correcta
+                // para buscar por DNI, nombre o apellido.
+                listaClientes = clienteDAO.obtenerClientesFiltrados(filtroGlobal.trim());
                 LOGGER.log(Level.INFO, "Clientes filtrados por '{0}' cargados. Cantidad: {1}", new Object[]{filtroGlobal, listaClientes.size()});
             } else {
                 // Si no hay filtro, obtiene todos los clientes
@@ -106,6 +109,18 @@ public class ClienteBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudieron cargar los clientes."));
         }
+    }
+
+    /**
+     * Resetea el filtro global y recarga la lista de clientes. Útil para un
+     * botón de "Limpiar Filtro" en la UI.
+     */
+    public void limpiarFiltroGlobal() {
+        this.filtroGlobal = null; // O this.filtroGlobal = "";
+        cargarClientes(); // Recarga la tabla sin filtro
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Información", "Filtro de clientes limpiado."));
+        LOGGER.log(Level.INFO, "Filtro global de clientes limpiado.");
     }
 
     /**

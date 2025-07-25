@@ -1,6 +1,6 @@
 package dao;
 
-import conf.Conexion;
+import conf.Conexion; // Asume que tienes una clase para manejar la conexión a la BD
 import java.io.Serializable; // Importar Serializable
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,14 +13,16 @@ import java.util.logging.Logger;
 import java.math.BigDecimal;
 
 import modelo.Producto;
+import jakarta.inject.Named; // Importar Named para hacer el DAO un Managed Bean
 
 /**
  * Clase DAO para la entidad Producto. Proporciona métodos para interactuar con
  * la tabla 'Productos' en la base de datos.
  */
-public class ProductoDAO implements Serializable { // Implementar Serializable
+@Named // Hace que este DAO sea un Managed Bean de CDI, accesible en EL
+public class ProductoDAO implements Serializable {
 
-    private static final long serialVersionUID = 1L; // Añadir serialVersionUID
+    private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(ProductoDAO.class.getName());
 
     /**
@@ -60,14 +62,20 @@ public class ProductoDAO implements Serializable { // Implementar Serializable
     }
 
     /**
-     * Busca productos por nombre o descripción que contengan el filtro dado.
-     * Incluye la descripción de la categoría.
+     * Obtiene productos de la base de datos que coincidan con el filtro dado,
+     * buscando en el nombre o la descripción. Incluye la descripción de la
+     * categoría. Este método actúa como un filtro global para productos.
      *
      * @param filtro El término de búsqueda.
      * @return Una lista de objetos Producto que coinciden con el filtro.
      */
-    public List<Producto> buscarPorNombre(String filtro) {
+    public List<Producto> obtenerProductosFiltrados(String filtro) {
         List<Producto> lista = new ArrayList<>();
+        // Si el filtro está vacío o nulo, retorna todos los productos
+        if (filtro == null || filtro.trim().isEmpty()) {
+            return listarProductos();
+        }
+
         String sql = "SELECT p.idProducto, p.nombre, p.descripción, p.precioUnitario, p.stockDisponible, "
                 + "c.idCategoria, c.descripcion "
                 + "FROM Productos p "
@@ -76,7 +84,7 @@ public class ProductoDAO implements Serializable { // Implementar Serializable
                 + "ORDER BY p.idProducto ASC";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-            String likeTerm = "%" + filtro + "%";
+            String likeTerm = "%" + filtro.trim() + "%"; // Asegurarse de trim() el filtro
             ps.setString(1, likeTerm);
             ps.setString(2, likeTerm);
 
@@ -96,7 +104,7 @@ public class ProductoDAO implements Serializable { // Implementar Serializable
             LOGGER.log(Level.INFO, "Se cargaron {0} productos filtrados por '{1}'.", new Object[]{lista.size(), filtro});
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error al buscar productos por nombre: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error al obtener productos filtrados: " + e.getMessage(), e);
         }
         return lista;
     }
@@ -214,5 +222,38 @@ public class ProductoDAO implements Serializable { // Implementar Serializable
             LOGGER.log(Level.SEVERE, "Error al obtener producto por ID: " + e.getMessage(), e);
         }
         return producto;
+    }
+
+    /**
+     * Reduce el stock de un producto en la base de datos.
+     *
+     * @param idProducto El ID del producto cuyo stock se va a reducir.
+     * @param cantidadAReducir La cantidad a restar del stock.
+     * @return true si el stock se actualizó exitosamente, false en caso
+     * contrario.
+     */
+    public boolean reducirStock(int idProducto, int cantidadAReducir) {
+        String sql = "UPDATE Productos SET stockDisponible = stockDisponible - ? WHERE idProducto = ? AND stockDisponible >= ?";
+        try (Connection conn = Conexion.getConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, cantidadAReducir);
+            stmt.setInt(2, idProducto);
+            stmt.setInt(3, cantidadAReducir); // Asegura que no se reduzca el stock por debajo de cero
+
+            int filasAfectadas = stmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                LOGGER.log(Level.INFO, "Stock reducido para producto ID {0} en {1} unidades.", new Object[]{idProducto, cantidadAReducir});
+                return true;
+            } else {
+                LOGGER.log(Level.WARNING, "No se pudo reducir el stock para producto ID {0}. Posiblemente stock insuficiente o producto no encontrado.", idProducto);
+                return false;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error SQL al reducir stock para producto ID " + idProducto + ": " + e.getMessage(), e);
+            return false;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error inesperado al reducir stock para producto ID " + idProducto + ": " + e.getMessage(), e);
+            return false;
+        }
     }
 }

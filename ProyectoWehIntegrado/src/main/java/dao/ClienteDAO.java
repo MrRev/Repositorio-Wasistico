@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jakarta.inject.Named; // Importar Named para hacer el DAO un Managed Bean
 
 /**
  * Clase DAO (Data Access Object) para la entidad Cliente. Proporciona métodos
  * para interactuar con la tabla 'Clientes' en la base de datos.
  */
+@Named // Hace que este DAO sea un Managed Bean de CDI, accesible en EL
 public class ClienteDAO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,7 +30,6 @@ public class ClienteDAO implements Serializable {
      * contrario.
      */
     public boolean agregarCliente(Cliente cliente) {
-        // Se corrigió 'dirección' a 'direccion' para coincidir con el schema de DB actualizado
         String sql = "INSERT INTO Clientes (dni, nombre, apellido, correo, telefono, direccion, idSexo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, cliente.getDni());
@@ -36,7 +37,7 @@ public class ClienteDAO implements Serializable {
             ps.setString(3, cliente.getApellido());
             ps.setString(4, cliente.getCorreo());
             ps.setString(5, cliente.getTelefono());
-            ps.setString(6, cliente.getDireccion()); // Se corrigió el método getter si es necesario, asumiendo que Cliente.getDireccion() devuelve el valor sin acento
+            ps.setString(6, cliente.getDireccion());
             ps.setInt(7, cliente.getIdSexo());
 
             int filasAfectadas = ps.executeUpdate();
@@ -64,7 +65,6 @@ public class ClienteDAO implements Serializable {
      * contrario.
      */
     public boolean actualizarCliente(Cliente cliente) {
-        // Se corrigió 'dirección' a 'direccion' para coincidir con el schema de DB actualizado
         String sql = "UPDATE Clientes SET dni=?, nombre=?, apellido=?, correo=?, telefono=?, direccion=?, idSexo=? WHERE idCliente=?";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, cliente.getDni());
@@ -72,7 +72,7 @@ public class ClienteDAO implements Serializable {
             ps.setString(3, cliente.getApellido());
             ps.setString(4, cliente.getCorreo());
             ps.setString(5, cliente.getTelefono());
-            ps.setString(6, cliente.getDireccion()); // Se corrigió el método getter
+            ps.setString(6, cliente.getDireccion());
             ps.setInt(7, cliente.getIdSexo());
             ps.setInt(8, cliente.getIdCliente());
 
@@ -120,10 +120,9 @@ public class ClienteDAO implements Serializable {
      */
     public List<Cliente> obtenerTodosClientes() {
         List<Cliente> clientes = new ArrayList<>();
-        // Se corrigió 'dirección' a 'direccion' y se añadió ORDER BY c.idCliente ASC
         String sql = "SELECT c.idCliente, c.dni, c.nombre, c.apellido, c.correo, c.telefono, c.direccion, c.idSexo, s.descripcion AS sexoDescripcion FROM Clientes c JOIN Sexos s ON c.idSexo = s.idSexo ORDER BY c.idCliente ASC";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            LOGGER.log(Level.INFO, "Ejecutando consulta: {0}", sql); // Añadido para depuración
+            LOGGER.log(Level.INFO, "Ejecutando consulta: {0}", sql);
             while (rs.next()) {
                 clientes.add(mapearResultSetACliente(rs));
             }
@@ -146,18 +145,16 @@ public class ClienteDAO implements Serializable {
     public List<Cliente> obtenerClientesFiltrados(String filtroGlobal) {
         List<Cliente> clientes = new ArrayList<>();
         StringBuilder sqlBuilder = new StringBuilder();
-        // Se corrigió 'dirección' a 'direccion'
         sqlBuilder.append("SELECT c.idCliente, c.dni, c.nombre, c.apellido, c.correo, c.telefono, c.direccion, c.idSexo, s.descripcion AS sexoDescripcion ");
         sqlBuilder.append("FROM Clientes c JOIN Sexos s ON c.idSexo = s.idSexo ");
 
         if (filtroGlobal != null && !filtroGlobal.trim().isEmpty()) {
-            // Se corrigió 'dirección' a 'direccion'
             sqlBuilder.append("WHERE c.dni LIKE ? OR c.nombre LIKE ? OR c.apellido LIKE ? OR c.correo LIKE ? OR c.telefono LIKE ? OR c.direccion LIKE ? OR s.descripcion LIKE ?");
         }
-        sqlBuilder.append(" ORDER BY c.idCliente ASC"); // Se añadió ORDER BY ASC para consistencia
+        sqlBuilder.append(" ORDER BY c.idCliente ASC");
 
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sqlBuilder.toString())) {
-            LOGGER.log(Level.INFO, "Ejecutando consulta: {0}", sqlBuilder.toString()); // Añadido para depuración
+            LOGGER.log(Level.INFO, "Ejecutando consulta: {0}", sqlBuilder.toString());
             if (filtroGlobal != null && !filtroGlobal.trim().isEmpty()) {
                 String likeTerm = "%" + filtroGlobal.trim() + "%";
                 ps.setString(1, likeTerm);
@@ -189,11 +186,10 @@ public class ClienteDAO implements Serializable {
      * ocurre un error.
      */
     public Cliente obtenerClientePorId(int idCliente) {
-        // Se corrigió 'dirección' a 'direccion'
         String sql = "SELECT c.idCliente, c.dni, c.nombre, c.apellido, c.correo, c.telefono, c.direccion, c.idSexo, s.descripcion AS sexoDescripcion "
                 + "FROM Clientes c JOIN Sexos s ON c.idSexo = s.idSexo WHERE c.idCliente=?";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
-            LOGGER.log(Level.INFO, "Ejecutando consulta: {0}", sql); // Añadido para depuración
+            LOGGER.log(Level.INFO, "Ejecutando consulta: {0}", sql);
             ps.setInt(1, idCliente);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -215,11 +211,10 @@ public class ClienteDAO implements Serializable {
      * ocurre un error.
      */
     public Cliente obtenerClientePorDni(String dni) {
-        // Se corrigió 'dirección' a 'direccion'
         String sql = "SELECT c.idCliente, c.dni, c.nombre, c.apellido, c.correo, c.telefono, c.direccion, c.idSexo, s.descripcion AS sexoDescripcion "
                 + "FROM Clientes c JOIN Sexos s ON c.idSexo = s.idSexo WHERE c.dni=?";
         try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
-            LOGGER.log(Level.INFO, "Ejecutando consulta: {0}", sql); // Añadido para depuración
+            LOGGER.log(Level.INFO, "Ejecutando consulta: {0}", sql);
             ps.setString(1, dni);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -251,7 +246,7 @@ public class ClienteDAO implements Serializable {
                 rs.getString("apellido"),
                 rs.getString("correo"),
                 rs.getString("telefono"),
-                rs.getString("direccion"), // Se corrigió 'dirección' a 'direccion'
+                rs.getString("direccion"),
                 rs.getInt("idSexo"),
                 rs.getString("sexoDescripcion")
         );

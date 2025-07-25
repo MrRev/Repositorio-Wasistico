@@ -186,7 +186,7 @@
 
         <h:outputScript>
             document.addEventListener('DOMContentLoaded', function() {
-            initVentaPage();
+                initVentaPage();
             });
         </h:outputScript>
 
@@ -205,13 +205,18 @@
                             <b:inputText id="filtroCliente" value="#{ventaBean.filtroClienteDni}"
                                          label="Buscar Cliente (DNI/Nombre)"
                                          placeholder="Ingrese DNI o nombre para buscar">
+                                <!-- Se asegura que el filtro se aplique a la tabla de clientes -->
+                                <!-- La lógica de filtrado real debe estar en ventaBean.cargarClientesDisponibles() -->
                                 <p:ajax event="keyup" listener="#{ventaBean.cargarClientesDisponibles}"
                                         update="clientesDataTable clienteMessages" delay="300" process="@this" />
+                                <!-- Se previene el comportamiento por defecto de la tecla Enter -->
                                 <p:ajax event="keydown" onstart="if (event.keyCode === 13) { event.preventDefault(); return false; }" process="@this" />
                             </b:inputText>
                         </b:column>
                         <b:column col-xs="12" col-sm="6">
                             <h:panelGroup layout="block" styleClass="form-group" style="margin-top: 25px;">
+                                <!-- Se eliminó type="button" para permitir que JSF maneje la navegación correctamente. -->
+                                <!-- La acción ahora es una navegación directa a la página cliente.xhtml. -->
                                 <p:commandButton value="Nuevo Cliente" icon="pi pi-user-plus" styleClass="ui-button-info"
                                                  action="/cliente.xhtml?faces-redirect=true" />
                             </h:panelGroup>
@@ -240,7 +245,7 @@
                         <p:column headerText="Acciones" width="15%">
                             <p:commandButton value="Seleccionar" icon="pi pi-check" styleClass="ui-button-success ui-button-flat"
                                              action="#{ventaBean.seleccionarCliente(cli)}"
-                                             update="formSeleccionCliente:clienteSeleccionadoPanel formSeleccionCliente:clienteMessages globalMessages" />
+                                             update="formSeleccionCliente:clienteSeleccionadoPanel formSeleccionCliente:clienteMessages globalMessages formResumenVenta" />
                         </p:column>
                     </p:dataTable>
 
@@ -259,7 +264,7 @@
                             </p:panelGrid>
                             <p:commandButton value="Cambiar Cliente" icon="pi pi-undo" styleClass="ui-button-secondary"
                                              action="#{ventaBean.setClienteSeleccionado(null)}"
-                                             update="formSeleccionCliente:clienteSeleccionadoPanel formSeleccionCliente:clienteMessages globalMessages" />
+                                             update="formSeleccionCliente:clienteSeleccionadoPanel formSeleccionCliente:clienteMessages globalMessages formResumenVenta" />
                         </h:panelGroup>
                         <h:panelGroup rendered="#{ventaBean.clienteSeleccionado == null}">
                             <h4 style="color: #6c757d;">Ningún cliente seleccionado.</h4>
@@ -278,6 +283,8 @@
                             <b:inputText id="filtroProducto" value="#{ventaBean.filtroProductoNombre}"
                                          label="Buscar Producto (Nombre/Descripción)"
                                          placeholder="Ingrese nombre o descripción">
+                                <!-- Se asegura que el filtro se aplique a la tabla de productos -->
+                                <!-- La lógica de filtrado real debe estar en ventaBean.cargarProductosDisponibles() -->
                                 <p:ajax event="keyup" listener="#{ventaBean.cargarProductosDisponibles}"
                                         update="productosDataTable formSeleccionProductos:productoMessages" delay="300" process="@this" />
                                 <p:ajax event="keydown" onstart="if (event.keyCode === 13) { event.preventDefault(); return false; }" process="@this" />
@@ -299,9 +306,9 @@
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="5,10,15">
 
-                        <!-- Corrección: Usar la referencia completa para productoMessages -->
-                        <p:ajax event="rowSelect" update="formSeleccionProductos:cantidadInput formSeleccionProductos:addProductoBtn formSeleccionProductos:productoMessages" process="@this" />
-                        <p:ajax event="rowUnselect" update="formSeleccionProductos:cantidadInput formSeleccionProductos:addProductoBtn formSeleccionProductos:productoMessages" process="@this" />
+                        <!-- Corrección: Usar la referencia completa para productoMessages y actualizar el resumen -->
+                        <p:ajax event="rowSelect" update="formSeleccionProductos:cantidadInput formSeleccionProductos:addProductoBtn formSeleccionProductos:productoMessages formResumenVenta" process="@this" />
+                        <p:ajax event="rowUnselect" update="formSeleccionProductos:cantidadInput formSeleccionProductos:addProductoBtn formSeleccionProductos:productoMessages formResumenVenta" process="@this" />
 
                         <p:column headerText="ID" width="10%">
                             <h:outputText value="#{prod.idProducto}" />
@@ -330,14 +337,15 @@
                                          type="number"
                                          disabled="#{ventaBean.productoSeleccionadoParaCarrito == null}">
                                 <f:validateLongRange minimum="1" />
-                                <p:ajax event="blur" update="productoMessages" />
+                                <!-- Se asegura que los mensajes se actualicen correctamente -->
+                                <p:ajax event="blur" update="formSeleccionProductos:productoMessages" />
                             </b:inputText>
                         </b:column>
                         <b:column col-xs="12" col-sm="6">
                             <h:panelGroup layout="block" styleClass="form-group" style="margin-top: 25px;">
                                 <p:commandButton id="addProductoBtn" value="Añadir al Carrito" icon="pi pi-cart-plus"
                                                  action="#{ventaBean.agregarProductoAlCarrito}"
-                                                 update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formSeleccionProductos:productoMessages globalMessages formSeleccionProductos:productosDataTable"
+                                                 update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formSeleccionProductos:productoMessages globalMessages formSeleccionProductos:productosDataTable formResumenVenta"
                                                  process="@form"
                                                  disabled="#{ventaBean.productoSeleccionadoParaCarrito == null}" />
                             </h:panelGroup>
@@ -357,15 +365,16 @@
                                  reflow="true"
                                  emptyMessage="El carrito está vacío.">
                         <p:column headerText="Producto" width="40%">
-                            <h:outputText value="#{productoDAO.obtenerProductoPorId(detalle.idProducto).nombre}" />
+                            <h:outputText value="#{ventaBean.productoSeleccionadoParaCarrito.nombre}" />
                         </p:column>
                         <p:column headerText="Cantidad" width="15%">
                             <p:inputText value="#{detalle.cantidad}" style="width: 100%;"
                                          converterMessage="La cantidad debe ser un número entero."
                                          validatorMessage="La cantidad debe ser mayor a cero.">
                                 <f:validateLongRange minimum="1" />
+                                <!-- Se asegura que el resumen de la venta se actualice al cambiar la cantidad -->
                                 <p:ajax event="blur" listener="#{ventaBean.actualizarCantidadEnCarrito(detalle)}"
-                                        update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formCarrito:carritoMessages globalMessages" />
+                                        update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formCarrito:carritoMessages globalMessages formResumenVenta" />
                             </p:inputText>
                         </p:column>
                         <p:column headerText="Precio Unitario" width="20%">
@@ -379,9 +388,10 @@
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Acciones" width="5%">
+                            <!-- Se asegura que el resumen de la venta se actualice al eliminar un producto -->
                             <p:commandButton icon="pi pi-times" styleClass="ui-button-danger ui-button-flat"
                                              action="#{ventaBean.eliminarProductoDelCarrito(detalle)}"
-                                             update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formCarrito:carritoMessages globalMessages" />
+                                             update="formCarrito:carritoDataTable formCarrito:totalVentaPanel formCarrito:carritoMessages globalMessages formResumenVenta" />
                         </p:column>
                     </p:dataTable>
 
