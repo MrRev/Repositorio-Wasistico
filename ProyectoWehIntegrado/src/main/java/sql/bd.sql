@@ -129,23 +129,14 @@ INSERT INTO Clientes (dni, nombre, apellido, correo, telefono, direccion, idSexo
 VALUES
 ('12345678', 'Luis', 'Torres', 'luis.torres@mail.com', '987654321', 'Av. Lima 123', 1),
 ('23456789', 'Ana', 'Ramirez', 'ana.ramirez@mail.com', '912345678', 'Jr. Cusco 456', 2),
-('34567890', 'Pedro', 'Soto', 'pedro.soto@mail.com', '954321789', 'Calle Piura 789', 1),
-('45678901', 'Maria', 'Perez', 'maria.perez@mail.com', '987123654', 'Av. Arequipa 321', 2),
-('56789012', 'Jorge', 'Cruz', 'jorge.cruz@mail.com', '911223344', 'Jr. Libertad 111', 1),
-('67890123', 'Sofia', 'Gomez', 'sofia.gomez@mail.com', '913334455', 'Calle Central 888', 2),
-('78901234', 'Carlos', 'Mendoza', 'carlos.mendoza@mail.com', '922334455', 'Av. Progreso 999', 1),
-('89012345', 'Paula', 'Lopez', 'paula.lopez@mail.com', '944556677', 'Jr. Lima 444', 2),
-('90123456', 'Jose', 'Salazar', 'jose.salazar@mail.com', '955667788', 'Av. Grau 222', 1),
-('11223344', 'Lucia', 'Aguilar', 'lucia.aguilar@mail.com', '966778899', 'Calle Lince 555', 2);
 
 -- ===========================================================
 -- Tabla Usuarios
 -- ===========================================================
 INSERT INTO Usuarios (dni, nombre, apellido, correo, telefono, direccion, contrasena, idSexo, idRol)
 VALUES
-('72189592', 'Mauro Estefano', 'Lazaro Pinco', 'lazarooswaldo948@gmail.com', '938132318', 'CASA', '12345', 1, 1),
-('41748596', 'Mauro Estefano', 'Lazaro Pinco', 'lazarooswaldo948@gmail.com', '938132318', 'CASA', '12345', 1, 1),
-('12345678', 'Mauro Estefano', 'Lazaro Pinco', 'lazarooswaldo948@gmail.com', '938132318', 'CASA', '12345', 1, 1);
+('72189592', 'Mauro Estefano', 'Lazaro Pinco', 'lazarooswaldo948@gmail.com', '938132318', 'CASA', '12345', 1, 1);
+
 -- ===========================================================
 -- Tabla Productos
 -- ===========================================================
@@ -170,38 +161,181 @@ VALUES
 
 -- ===========================================================
 -- Tabla Ventas
--- ===========================================================
-INSERT INTO Ventas (idCliente, idUsuario, fechaVenta, fechaCreacion, total)
-VALUES
-(1, 2, '2024-01-10', '2024-01-10', 35.00),
-(2, 2, '2024-01-11', '2024-01-11', 45.00),
-(3, 3, '2024-01-12', '2024-01-12', 25.00),
-(4, 2, '2024-01-13', '2024-01-13', 55.00),
-(5, 2, '2024-01-15', '2024-01-15', 65.00),
-(6, 2, '2024-01-16', '2024-01-16', 15.00),
-(7, 3, '2024-01-17', '2024-01-17', 28.00),
-(8, 2, '2024-01-18', '2024-01-18', 37.00),
-(9, 2, '2024-01-19', '2024-01-19', 42.00),
-(10, 2, '2024-01-20', '2024-01-20', 52.00);
+-- Usar la base de datos BodegaDonPablo
+USE BodegaDonPablo;
 
--- ===========================================================
--- Tabla Detalle_Ventas
--- ===========================================================
-INSERT INTO Detalle_Ventas (idVenta, idProducto, Cantidad, precioUnitario, Subtotal)
-VALUES
-(1, 1, 5, 3.50, 17.50),
-(1, 3, 5, 2.00, 10.00),
-(2, 2, 8, 3.30, 26.40),
-(2, 4, 5, 1.50, 7.50),
-(3, 5, 3, 4.50, 13.50),
-(3, 6, 4, 2.80, 11.20),
-(4, 7, 2, 12.00, 24.00),
-(4, 8, 2, 14.00, 28.00),
-(5, 9, 20, 0.30, 6.00),
-(5, 10, 20, 0.50, 10.00),
-(6, 11, 5, 2.20, 11.00),
-(6, 12, 3, 1.80, 5.40),
-(7, 13, 4, 1.20, 4.80),
-(7, 14, 5, 1.00, 5.00),
-(8, 15, 4, 4.00, 16.00),
-(9, 16, 4, 3.00, 12.00);
+-- 1. Obtener la lista completa de clientes con la descripción de su sexo
+--    Muestra el DNI, nombre, apellido, correo y la descripción del sexo de cada cliente.
+SELECT
+    c.dni,
+    c.nombre,
+    c.apellido,
+    c.correo,
+    s.descripcion AS sexo_descripcion
+FROM
+    Clientes c
+INNER JOIN
+    Sexos s ON c.idSexo = s.idSexo;
+
+-- 2. Obtener la lista completa de usuarios con la descripción de su rol y sexo
+--    Muestra el DNI, nombre, apellido, correo, la descripción del rol y la descripción del sexo de cada usuario.
+SELECT
+    u.dni,
+    u.nombre,
+    u.apellido,
+    u.correo,
+    r.descripcion AS rol_descripcion,
+    s.descripcion AS sexo_descripcion
+FROM
+    Usuarios u
+INNER JOIN
+    Roles r ON u.idRol = r.idRol
+INNER JOIN
+    Sexos s ON u.idSexo = s.idSexo;
+
+-- 3. Obtener la lista de productos con la descripción de su categoría
+--    Muestra el nombre del producto, su precio unitario, stock disponible y la descripción de su categoría.
+SELECT
+    p.nombre AS producto_nombre,
+    c.descripcion AS categoria_descripcion,
+    p.precioUnitario,
+    p.stockDisponible
+FROM
+    Productos p
+INNER JOIN
+    Categorias c ON p.idCategoria = c.idCategoria;
+
+-- 4. Obtener el detalle de todas las ventas, incluyendo información del cliente y el usuario que realizó la venta
+--    Muestra el ID de la venta, la fecha, el total, y los nombres completos del cliente y el usuario.
+SELECT
+    v.idVenta,
+    v.fechaVenta,
+    v.total,
+    cl.nombre AS nombre_cliente,
+    cl.apellido AS apellido_cliente,
+    us.nombre AS nombre_usuario,
+    us.apellido AS apellido_usuario
+FROM
+    Ventas v
+INNER JOIN
+    Clientes cl ON v.idCliente = cl.idCliente
+INNER JOIN
+    Usuarios us ON v.idUsuario = us.idUsuario;
+
+-- 5. Obtener el detalle de los productos vendidos en cada venta
+--    Muestra el ID de la venta, el nombre del producto, la cantidad vendida, el precio unitario en el momento de la venta y el subtotal.
+SELECT
+    dv.idVenta,
+    p.nombre AS producto_nombre,
+    dv.Cantidad,
+    dv.precioUnitario AS precio_venta_unitario,
+    dv.Subtotal
+FROM
+    Detalle_Ventas dv
+INNER JOIN
+    Productos p ON dv.idProducto = p.idProducto;
+
+-- 6. Obtener el total de ventas por cliente
+--    Muestra el nombre completo del cliente y la suma total de todas sus compras.
+SELECT
+    c.nombre,
+    c.apellido,
+    SUM(v.total) AS total_comprado
+FROM
+    Clientes c
+INNER JOIN
+    Ventas v ON c.idCliente = v.idCliente
+GROUP BY
+    c.idCliente, c.nombre, c.apellido
+ORDER BY
+    total_comprado DESC;
+
+-- 7. Obtener la cantidad total vendida de cada producto
+--    Muestra el nombre del producto y la suma de las cantidades vendidas de ese producto.
+SELECT
+    p.nombre AS producto_nombre,
+    SUM(dv.Cantidad) AS cantidad_total_vendida
+FROM
+    Productos p
+INNER JOIN
+    Detalle_Ventas dv ON p.idProducto = dv.idProducto
+GROUP BY
+    p.idProducto, p.nombre
+ORDER BY
+    cantidad_total_vendida DESC;
+
+-- 8. Obtener las ventas realizadas por un usuario específico (ej. 'Mauro Estefano Lazaro Pinco')
+--    Muestra los detalles de la venta (ID, fecha, total) y el nombre del cliente.
+SELECT
+    v.idVenta,
+    v.fechaVenta,
+    v.total,
+    cl.nombre AS nombre_cliente,
+    cl.apellido AS apellido_cliente
+FROM
+    Ventas v
+INNER JOIN
+    Usuarios u ON v.idUsuario = u.idUsuario
+INNER JOIN
+    Clientes cl ON v.idCliente = cl.idCliente
+WHERE
+    u.nombre = 'Mauro Estefano' AND u.apellido = 'Lazaro Pinco';
+
+-- 9. Obtener los productos más vendidos por categoría
+--    Muestra la categoría, el nombre del producto y la cantidad total vendida.
+SELECT
+    cat.descripcion AS categoria,
+    p.nombre AS producto_nombre,
+    SUM(dv.Cantidad) AS cantidad_total_vendida
+FROM
+    Detalle_Ventas dv
+INNER JOIN
+    Productos p ON dv.idProducto = p.idProducto
+INNER JOIN
+    Categorias cat ON p.idCategoria = cat.idCategoria
+GROUP BY
+    cat.descripcion, p.nombre
+ORDER BY
+    categoria, cantidad_total_vendida DESC;
+
+-- 10. Obtener el valor total de ventas por categoría de producto
+--     Muestra la descripción de la categoría y la suma de los subtotales de los productos de esa categoría.
+SELECT
+    c.descripcion AS categoria_nombre,
+    SUM(dv.Subtotal) AS total_ventas_categoria
+FROM
+    Detalle_Ventas dv
+INNER JOIN
+    Productos p ON dv.idProducto = p.idProducto
+INNER JOIN
+    Categorias c ON p.idCategoria = c.idCategoria
+GROUP BY
+    c.descripcion
+ORDER BY
+    total_ventas_categoria DESC;
+
+-- 11. Obtener clientes que no han realizado ninguna compra (usando LEFT JOIN)
+--     Muestra el nombre y apellido de los clientes que no tienen registros en la tabla Ventas.
+SELECT
+    c.nombre,
+    c.apellido
+FROM
+    Clientes c
+LEFT JOIN
+    Ventas v ON c.idCliente = v.idCliente
+WHERE
+    v.idVenta IS NULL;
+
+-- 12. Obtener productos que nunca han sido vendidos (usando LEFT JOIN)
+--     Muestra el nombre del producto y su categoría.
+SELECT
+    p.nombre AS producto_nombre,
+    cat.descripcion AS categoria
+FROM
+    Productos p
+LEFT JOIN
+    Detalle_Ventas dv ON p.idProducto = dv.idProducto
+INNER JOIN
+    Categorias cat ON p.idCategoria = cat.idCategoria
+WHERE
+    dv.idDetalle_Venta IS NULL;
